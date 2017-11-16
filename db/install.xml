@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/statistics/db" VERSION="20130520" COMMENT="XMLDB file for Moodle mod"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+        >
+    <TABLES>
+        <TABLE NAME="statistics" COMMENT="For statistics storage">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="courseid"/>
+                <FIELD NAME="courseid" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="pavadinimas"/>
+                <FIELD NAME="pavadinimas" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="courseid" NEXT="kodas"/>
+                <FIELD NAME="kodas" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="pavadinimas" NEXT="fakultetas"/>
+                <FIELD NAME="fakultetas" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="kodas" NEXT="katedra"/>
+                <FIELD NAME="katedra" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="fakultetas" NEXT="autorius"/>
+                <FIELD NAME="autorius" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="katedra" NEXT="destytoju_skaicius"/>
+                <FIELD NAME="destytoju_skaicius" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="autorius" NEXT="aktyvus_destytojai"/>
+                <FIELD NAME="aktyvus_destytojai" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="destytoju_skaicius" NEXT="paskutinio_destytojo_data"/>
+                <FIELD NAME="paskutinio_destytojo_data" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="aktyvus_destytojai" NEXT="studentu_skaicius"/>
+                <FIELD NAME="studentu_skaicius" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="paskutinio_destytojo_data" NEXT="aktyvus_studentai"/>
+                <FIELD NAME="aktyvus_studentai" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="studentu_skaicius" NEXT="paskutinio_studento_data"/>
+                <FIELD NAME="paskutinio_studento_data" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="aktyvus_studentai" NEXT="resource"/>
+                <FIELD NAME="resource" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="paskutinio_studento_data" NEXT="page"/>
+                <FIELD NAME="page" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="resource" NEXT="url"/>
+                <FIELD NAME="url" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="page" NEXT="book"/>
+                <FIELD NAME="book" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="url" NEXT="other"/>
+                <FIELD NAME="other" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="book" NEXT="assign"/>
+                <FIELD NAME="assign" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="other" NEXT="vips"/>
+                <FIELD NAME="vips" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="assign" NEXT="forumai"/>
+                <FIELD NAME="forumai" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="vips" NEXT="forumo_pranesimu_kiekis"/>
+                <FIELD NAME="forumo_pranesimu_kiekis" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="vips" NEXT="testu_skaicius"/>
+                <FIELD NAME="testu_skaicius" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="forumo_pranesimu_kiekis" NEXT="klausimu_skaicius"/>
+                <FIELD NAME="klausimu_skaicius" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="testu_skaicius" NEXT="failu_skaicius"/>
+                <FIELD NAME="failu_skaicius" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="klausimu_skaicius" NEXT="zodynu_skaicius"/>
+                <FIELD NAME="zodynu_skaicius" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="failu_skaicius" NEXT="terminu_skaicius"/>
+                <FIELD NAME="terminu_skaicius" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="zodynu_skaicius" NEXT="kitos_veiklos"/>
+                <FIELD NAME="kitos_veiklos" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="terminu_skaicius" NEXT="kada_buvo_surinkta"/>
+                <FIELD NAME="kada_buvo_surinkta" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="kitos_veiklos"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id, courseid" COMMENT="Primary key"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="ids" UNIQUE="true" FIELDS="id, courseid" COMMENT="Indeksas"/>
+            </INDEXES>
+        </TABLE>
+    </TABLES>
+</XMLDB>
