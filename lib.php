@@ -7,23 +7,23 @@ function local_get_statistic()
     $d = new stdClass();
 
      //turi būti užkonfiginta
-    $interval1 = strtotime('16-2-1');
-    $interval2 = strtotime('16-10-1');
+    $interval1 = strtotime('17-8-1');
+    $interval2 = strtotime('17-12-20');
 
     mtrace("Generuojama kursų statistika");
 
-    $servername = "192.168.20.5";
-    $username = "user";
-    $password = "ktuvma@2015";
-   
-
-    $mysqli = new mysqli($servername, $username, $password, "mano_ktu_lt");
-
-    if ($mysqli->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-    
-    $mysqli->query("set names 'utf8'");
+//    $servername = "192.168.20.5";
+//    $username = "user";
+//    $password = "ktuvma@2015";
+//
+//
+//    $mysqli = new mysqli($servername, $username, $password, "mano_ktu_lt");
+//
+//    if ($mysqli->connect_error) {
+//        die("Connection failed: " . $mysqli->connect_error);
+//    }
+//
+//    $mysqli->query("set names 'utf8'");
 
     $courseCount = get_config('local_statistics', 'course_per_cron');
     $lastCourseId = get_config('local_statistics', 'last_course_id');
@@ -33,28 +33,29 @@ function local_get_statistic()
     foreach ($ids as $CurrentId) {
         $id = $CurrentId->id;
 
-        $sql = "SELECT
-            field_data_field_firstname.field_firstname_value,
-            field_data_field_lastname.field_lastname_value,
-          moodle_int_courses.cid
-        FROM
-            moodle_int_courses
-        JOIN node ON node.nid = moodle_int_courses.nid
-        JOIN field_data_field_firstname ON node.uid = field_data_field_firstname.entity_id
-        JOIN field_data_field_lastname ON node.uid = field_data_field_lastname.entity_id
-        WHERE
-            mid = " . $id;
-
-        $result = $mysqli->query($sql);
-        $data = $result->fetch_row();
+//        $sql = "SELECT
+//            field_data_field_firstname.field_firstname_value,
+//            field_data_field_lastname.field_lastname_value,
+//          moodle_int_courses.cid
+//        FROM
+//            moodle_int_courses
+//        JOIN node ON node.nid = moodle_int_courses.nid
+//        JOIN field_data_field_firstname ON node.uid = field_data_field_firstname.entity_id
+//        JOIN field_data_field_lastname ON node.uid = field_data_field_lastname.entity_id
+//        WHERE
+//            mid = " . $id;
+//
+//        $result = $mysqli->query($sql);
+//        $data = $result->fetch_row();
 
         $d->courseid = (int)$id;
         $r = $DB->get_record_sql('SELECT * FROM {course} WHERE id = ?', array($id));
+        $courseidnumber = $r->idnumber;
         $d->pavadinimas = $r->fullname;
         //$d->kodas = substr($d->pavadinimas, 0, 8);
         //$d->kodas = trim($d->kodas, "„“");
-        isset($data[2]) ? $d->kodas = $data[2] : $d->kodas = "-";
-
+//        isset($data[2]) ? $d->kodas = $data[2] : $d->kodas = "-";
+        $d->kodas = get_ais_courseid_from_idnumber($courseidnumber);
 
         $r = $DB->get_record_sql('SELECT * FROM {course_categories} WHERE id = ?', array($r->category));
         isset($r->name) ? $katedra = $r->name : $katedra = "-";
@@ -72,7 +73,7 @@ function local_get_statistic()
         else
             $d->katedra = $katedra;
 
-        isset($data[0]) ? $d->autorius = $data[0] . " " . $data[1] : $d->autorius = "-";
+        $d->autorius = get_user_fullname_by_uid(get_uid_from_idnumber($courseidnumber));
 
         $coursecontext = context_course::instance($id);
         $enrolinstances = enrol_get_instances($id, false);
@@ -342,4 +343,48 @@ function local_statistics_extend_settings_navigation(settings_navigation $nav, c
             $settingnode->add(get_string('download_statistics', 'local_statistics'), $url, navigation_node::TYPE_RESOURCE, null, null, new pix_icon('i/export', ''));
     }    
 }
+
+
+/**
+ * Parse ldap_uid from idnumber
+ * example T120B001_namsurn_1510824845
+ * so should return namsurn
+ * @param $idnumber
+ * @return string
+ */
+function get_uid_from_idnumber($idnumber) {
+    if (empty($idnumber)) return '';
+    $courseparts = explode('_', $idnumber);
+    $uid = $courseparts[1];
+    if (empty($uid)) return '';
+    return $uid;
+}
+
+function get_ais_courseid_from_idnumber($idnumber) {
+    if (empty($idnumber)) return '-';
+    $courseparts = explode('_', $idnumber);
+    $ais_courseid = $courseparts[0];
+    if (empty($ais_courseid)) return '-';
+    return $ais_courseid;
+}
+
+/**
+ * Finds full user name by uid(ldap_uid)
+ * @param $uid
+ * @return string
+ */
+function get_user_fullname_by_uid($uid) {
+    global $DB;
+
+    if (empty($uid)) return '-';
+    $user = $DB->get_record('user', array('alternatename' => 'ldap_uid#' . $uid . ';'));
+
+    if ($user) {
+        return $user->firstname . ' ' . $user->lastname;
+    }
+    else {
+        return $uid;
+    }
+}
+
 
