@@ -262,7 +262,7 @@ function get_users_from_course($roleid, $enrols, $context)
     global $DB;
 
     $t = "";
-    if (isset($enrols)) {
+    if (!empty($enrols)) {
         $t = "AND ue.enrolid IN (";
         foreach ($enrols as $enrol) {
             $t .= $enrol->id . " ,";
