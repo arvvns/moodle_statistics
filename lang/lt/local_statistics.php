@@ -36,3 +36,4 @@ $string['last_course_id'] = 'Paskutinio kurso ID';
 $string['last_course_id_desc'] = 'Paskutinio kurso ID, kurį apdorojo cron';
 $string['download_statistics'] = 'Atsisiųsti statistiką';
 //$string['timetosee'] = 'Remove after inactivity (minutes)';
+$string['cleanup'] = 'Statistikos siukliu valymas';

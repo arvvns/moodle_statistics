@@ -16,11 +16,6 @@
 
 /**
  * Definition of Forum scheduled tasks.
- *
- * @package   mod_forum
- * @category  task
- * @copyright 2014 Dan Poltawski <dan@moodle.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -31,6 +26,15 @@ $tasks = array(
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*'
+    ),
+    array(
+        'classname' => 'local_statistics\task\cleanup',
+        'blocking' => 0,
+        'minute' => '30',
+        'hour' => '*/6',
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*'

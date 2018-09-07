@@ -35,5 +35,6 @@ $string['course_per_cron_desc'] = 'Number of courses processed per cron operatio
 $string['last_course_id'] = 'Last course ID';
 $string['last_course_id_desc'] = 'Last course processed per cron operation';
 $string['download_statistics'] = 'Download statistics';
+$string['cleanup'] = 'Statistics cleaning duty cron task';
 
 
