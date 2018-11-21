@@ -12,19 +12,6 @@ function local_get_statistic()
 
     mtrace("Generuojama kursų statistika");
 
-//    $servername = "192.168.20.5";
-//    $username = "user";
-//    $password = "ktuvma@2015";
-//
-//
-//    $mysqli = new mysqli($servername, $username, $password, "mano_ktu_lt");
-//
-//    if ($mysqli->connect_error) {
-//        die("Connection failed: " . $mysqli->connect_error);
-//    }
-//
-//    $mysqli->query("set names 'utf8'");
-
     $courseCount = get_config('local_statistics', 'course_per_cron');
     $lastCourseId = get_config('local_statistics', 'last_course_id');
 
@@ -32,34 +19,14 @@ function local_get_statistic()
 
     foreach ($ids as $CurrentId) {
         $id = $CurrentId->id;
-
-//        $sql = "SELECT
-//            field_data_field_firstname.field_firstname_value,
-//            field_data_field_lastname.field_lastname_value,
-//          moodle_int_courses.cid
-//        FROM
-//            moodle_int_courses
-//        JOIN node ON node.nid = moodle_int_courses.nid
-//        JOIN field_data_field_firstname ON node.uid = field_data_field_firstname.entity_id
-//        JOIN field_data_field_lastname ON node.uid = field_data_field_lastname.entity_id
-//        WHERE
-//            mid = " . $id;
-//
-//        $result = $mysqli->query($sql);
-//        $data = $result->fetch_row();
-
         $d->courseid = (int)$id;
         $r = $DB->get_record_sql('SELECT * FROM {course} WHERE id = ?', array($id));
         $courseidnumber = $r->idnumber;
         $d->pavadinimas = $r->fullname;
-        //$d->kodas = substr($d->pavadinimas, 0, 8);
-        //$d->kodas = trim($d->kodas, "„“");
-//        isset($data[2]) ? $d->kodas = $data[2] : $d->kodas = "-";
         $d->kodas = get_ais_courseid_from_idnumber($courseidnumber);
 
         $r = $DB->get_record_sql('SELECT * FROM {course_categories} WHERE id = ?', array($r->category));
         isset($r->name) ? $katedra = $r->name : $katedra = "-";
-        //$katedra = $r->name;
 
         if (isset($r->parent) && $r->parent != 0) {
             $r = $DB->get_record_sql('SELECT * FROM {course_categories} WHERE id = ?', array($r->parent));
@@ -147,9 +114,6 @@ function local_get_statistic()
                 default:
                     $d->other += (int)$r->count;
             }
-            //if ($r->name == "resource" || $r->name == "page" || $r->name == "url" || $r->name == "book" || $r->name == "assign" || $r->name == "vips")
-            //    $d[$r->name] = $r->count;
-            //else $d->other += $r->count;
         }
 
 
@@ -324,14 +288,6 @@ function get_user_data($data)
     $d[1] = $activeCount;
     $d[2] = $newest;
     return $d;
-}
-
-function local_statistics_extends_navigation(global_navigation $nav){
-    global $CFG;
-    if (is_siteadmin()) {
-        //$url = new moodle_url($CFG->wwwroot . '/local/statistics/statistika.php?task=download');
-        //$nav->add(get_string('download_statistics', 'local_statistics'), $url, navigation_node::TYPE_RESOURCE, null, null, new pix_icon('i/export', ''));
-    }
 }
 
 function local_statistics_extend_settings_navigation(settings_navigation $nav, context $context){
