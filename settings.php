@@ -14,7 +14,11 @@ if ($hassiteconfig) {
     $settings->add( new admin_setting_configtext('local_statistics/last_course_id', get_string('last_course_id', 'local_statistics'),
         get_string('last_course_id_desc', 'local_statistics'), 1, PARAM_INT));
 
+    $settings->add( new admin_setting_configtext('local_statistics/interval_start', get_string('interval_start', 'local_statistics'),
+        get_string('interval_start_desc', 'local_statistics'), '17-8-1', PARAM_TEXT));
 
+    $settings->add( new admin_setting_configtext('local_statistics/interval_end', get_string('interval_end', 'local_statistics'),
+        get_string('interval_end_desc', 'local_statistics'), '17-12-20', PARAM_TEXT));
 
 
 }

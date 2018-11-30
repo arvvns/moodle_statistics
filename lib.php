@@ -1,14 +1,18 @@
 <?php
+// Needs field in db table
+define('ACTIVITES_LIST',  ["assign", "quiz", "glossary", "forum", "wiki", "data", "choice", "lesson", "feedback", "attendance"]);
+define('RESOURCES_LIST',  ["folder", "imscp", "label", "page", "resource", "url", "book"]);
 
-
-function local_get_statistic()
+function local_statistic_get()
 {
     global $DB;
-    $d = new stdClass();
 
+    //TODO i modulio configa perkelt
      //turi būti užkonfiginta
-    $interval1 = strtotime('17-8-1');
-    $interval2 = strtotime('17-12-20');
+    $interval_start = get_config('local_statistics', 'interval_start');
+    $interval_end = get_config('local_statistics', 'interval_end');
+    $interval1 = (!empty($interval_start))? strtotime($interval_start) : null;
+    $interval2 = (!empty($interval_end))? strtotime($interval_end) : null;
 
     mtrace("Generuojama kursų statistika");
 
@@ -18,103 +22,50 @@ function local_get_statistic()
     $ids = $DB->get_records_sql('SELECT id FROM {course} WHERE id > ' . $lastCourseId . ' LIMIT ' . $courseCount);
 
     foreach ($ids as $CurrentId) {
+        $d = new stdClass();
+        local_statistics_set_default_fields($d);
         $id = $CurrentId->id;
         $d->courseid = (int)$id;
         $r = $DB->get_record_sql('SELECT * FROM {course} WHERE id = ?', array($id));
         $courseidnumber = $r->idnumber;
-        $d->pavadinimas = $r->fullname;
-        $d->kodas = get_ais_courseid_from_idnumber($courseidnumber);
+        $d->coursename = $r->fullname;
+        $d->idnumber = get_ais_courseid_from_idnumber($courseidnumber);
 
         $r = $DB->get_record_sql('SELECT * FROM {course_categories} WHERE id = ?', array($r->category));
-        isset($r->name) ? $katedra = $r->name : $katedra = "-";
+        isset($r->name) ? $category = $r->name : $category = "-";
 
         if (isset($r->parent) && $r->parent != 0) {
             $r = $DB->get_record_sql('SELECT * FROM {course_categories} WHERE id = ?', array($r->parent));
-            $d->fakultetas = $r->name;
-        } else $d->fakultetas = "";
-
-        if($d->fakultetas == ""){
-            $d->fakultetas = $katedra;
-            $d->katedra = "";
+            $d->category = $r->name;
+            $d->subcategory = $category;
+        } else {
+            $d->category= $category;
+            $d->subcategory = "";
         }
-        else
-            $d->katedra = $katedra;
-
-        $d->autorius = get_user_fullname_by_uid(get_uid_from_idnumber($courseidnumber));
 
         $coursecontext = context_course::instance($id);
         $enrolinstances = enrol_get_instances($id, false);
 
-        $teachers = get_users_from_course(3, $enrolinstances, $coursecontext->id);
-        $data = get_user_data($teachers);
+        $teachers = local_statistics_get_users_from_course(3, $enrolinstances, $coursecontext->id);
+        $data = local_statistics_get_user_data($teachers);
 
-        $d->destytoju_skaicius = $data[0];
-        $d->aktyvus_destytojai = $data[1];
+        $d->teachers = local_statistics_get_teachers($courseidnumber, $teachers);
+        $d->teachers_count = $data[0];
+        $d->active_teachers = $data[1];
         if($data[2]>0)
-            $d->paskutinio_destytojo_data = date('Y-m-d H:i:s', $data[2]);
+            $d->teacher_last_access = date('Y-m-d H:i:s', $data[2]);
         else
-            $d->paskutinio_destytojo_data = "-";
+            $d->teacher_last_access = "-";
 
-        $students = get_users_from_course(5, $enrolinstances, $coursecontext->id);
-        $data = get_user_data($students);
+        $students = local_statistics_get_users_from_course(5, $enrolinstances, $coursecontext->id);
+        $data = local_statistics_get_user_data($students);
 
-        $d->studentu_skaicius = $data[0];
-        $d->aktyvus_studentai = $data[1];
+        $d->students_count = $data[0];
+        $d->active_students = $data[1];
         if($data[2]>0)
-            $d->paskutinio_studento_data = date('Y-m-d H:i:s', $data[2]);
+            $d->student_last_access = date('Y-m-d H:i:s', $data[2]);
         else
-            $d->paskutinio_studento_data = "-";
-
-
-        $resources = $DB->get_records_sql('SELECT
-            m.`name`,
-            count(*) as count,
-            cm.module
-        FROM
-            mdl_course_modules AS cm
-        JOIN mdl_modules as m ON cm.module = m.id
-        WHERE
-            cm.course = ' . $id . '
-        AND m.`name` IN ("folder", "imscp", "label", "page", "resource", "url", "book", "assign", "vips", "forum")
-        GROUP BY
-            cm.module');
-
-        $d->resource = 0;
-        $d->page = 0;
-        $d->url = 0;
-        $d->book = 0;
-        $d->other = 0;
-        $d->assign = 0;
-        $d->vips = 0;
-        $d->forumai = 0;
-
-        foreach ($resources as $r) {
-            switch ($r->name) {
-                case "resource":
-                    $d->resource = (int)$r->count;
-                    break;
-                case "page":
-                    $d->page = (int)$r->count;
-                    break;
-                case "url":
-                    $d->url = (int)$r->count;
-                    break;
-                case "book":
-                    $d->book = (int)$r->count;
-                    break;
-                case "assign":
-                    $d->assign = (int)$r->count;
-                    break;
-                case "vips":
-                    $d->vips = (int)$r->count;
-                    break;
-                case "forum":
-                    $d->forumai = (int)$r->count;
-                    break;
-                default:
-                    $d->other += (int)$r->count;
-            }
-        }
+            $d->student_last_access = "-";
 
 
         $posts = $DB->get_records_sql('SELECT
@@ -127,17 +78,7 @@ function local_get_statistic()
         WHERE
             f.course = ' . $id);
 
-        isset($posts[$id]) ? $d->forumo_pranesimu_kiekis = (int)$posts[$id]->count : $d->forumo_pranesimu_kiekis = 0;
-
-        $quizCount = $DB->get_records_sql('SELECT
-            mdl_quiz.course,
-            count(1) as count
-        FROM
-            mdl_quiz
-        WHERE
-            course = ' . $id);
-
-        isset($quizCount[$id]) ? $d->testu_skaicius = (int)$quizCount[$id]->count : $d->testu_skaicius = 0;
+        isset($posts[$id]) ? $d->forum_posts = (int)$posts[$id]->count : $d->forum_posts = 0;
 
         $questionCount = $DB->get_records_sql('SELECT
             mdl_question_categories.contextid,
@@ -148,11 +89,9 @@ function local_get_statistic()
         WHERE
             mdl_question_categories.contextid = ' . $coursecontext->id . ' and mdl_question.parent = 0');
 
-        isset($questionCount[$coursecontext->id]) ? $d->klausimu_skaicius = (int)$questionCount[$coursecontext->id]->count : $d->klausimu_skaicius = 0;
+        isset($questionCount[$coursecontext->id]) ? $d->quiz_questions = (int)$questionCount[$coursecontext->id]->count : $d->quiz_questions  = 0;
 
-        $year = date("Y");
-
-        $files = $DB->get_records_sql('SELECT
+        $filessql = 'SELECT
         mdl_course_modules.course,
         count(1) as count
         FROM
@@ -160,14 +99,13 @@ function local_get_statistic()
         JOIN mdl_context on mdl_context.instanceid = mdl_course_modules.id
         JOIN mdl_files on mdl_context.id = mdl_files.contextid
         WHERE
-            course = ' . $id . ' and mdl_course_modules.module = 23 and mdl_files.filesize > 0 and mdl_files.timecreated > ' . $interval1 . ' and mdl_files.timecreated < ' . $interval2);
+            course = ' . $id . ' and mdl_course_modules.module = 23 and mdl_files.filesize > 0 ';
 
-        
-        isset($files[$id]) ? $d->failu_skaicius = (int)$files[$id]->count : $d->failu_skaicius = 0;
+        if (!empty($interval1)) $filessql .= ' and mdl_files.timecreated > ' . $interval1 ;
+        if (!empty($interval2)) $filessql .= ' and mdl_files.timecreated < ' . $interval2;
+        $files = $DB->get_records_sql($filessql);
 
-
-        $glossary = $DB->get_records_sql('select course, count(1) as count from mdl_glossary where course = ' . $id);
-        isset($glossary[$id]) ? $d->zodynu_skaicius = (int)$glossary[$id]->count : $d->zodynu_skaicius = 0;
+        isset($files[$id]) ? $d->files = (int)$files[$id]->count : $d->files = 0;
 
 
         $glossaryEntries = $DB->get_records_sql('SELECT
@@ -179,29 +117,12 @@ function local_get_statistic()
         WHERE
             mdl_glossary.course = ' . $id);
 
-        isset($glossaryEntries[$id]) ? $d->terminu_skaicius = (int)$glossaryEntries[$id]->count : $d->terminu_skaicius = 0;
+        isset($glossaryEntries[$id]) ? $d->gossary_entries = (int)$glossaryEntries[$id]->count : $d->glossary_entries = 0;
 
-        $d->kada_buvo_surinkta = date('Y-m-d H:i:s', time());
+        $d->date = date('Y-m-d H:i:s', time());
 
-
-        $d->kitos_veiklos = 0;
-
-        $otherActivities = $DB->get_records_sql('SELECT
-            m.`name`,
-            count(1) as count
-        FROM
-            mdl_course_modules AS cm
-        JOIN mdl_modules as m ON cm.module = m.id
-        WHERE
-            cm.course = ' . $id . '
-        AND m.`name` NOT IN ("folder", "imscp", "label", "page", "resource", "url", "book", "assign", "vips", "quiz", "glossary", "forum")
-        GROUP BY
-            cm.module');
-
-        $d->kitos_veiklos = 0;
-        foreach ($otherActivities as $r) {
-            $d->kitos_veiklos += (int)$r->count;
-        }
+        $coursemodulescount = local_statistics_get_course_modules_count($id);
+        $d = (object) array_merge((array) $d, (array) $coursemodulescount);
 
         $exists = $DB->get_records_sql("SELECT * FROM mdl_statistics WHERE courseid = ".$id);
 
@@ -221,7 +142,7 @@ function local_get_statistic()
     return true;
 }
 
-function get_users_from_course($roleid, $enrols, $context)
+function local_statistics_get_users_from_course($roleid, $enrols, $context)
 {
     global $DB;
 
@@ -273,7 +194,7 @@ function get_users_from_course($roleid, $enrols, $context)
     return $r;
 }
 
-function get_user_data($data)
+function local_statistics_get_user_data($data)
 {
     $active = time() - 60 * 60 * 24 * 30;
     $activeCount = 0;
@@ -308,7 +229,7 @@ function local_statistics_extend_settings_navigation(settings_navigation $nav, c
  * @param $idnumber
  * @return string
  */
-function get_uid_from_idnumber($idnumber) {
+function local_statistics_get_uid_from_idnumber($idnumber) {
     if (empty($idnumber)) return '';
     $courseparts = explode('_', $idnumber);
     $uid = $courseparts[1];
@@ -320,7 +241,7 @@ function get_ais_courseid_from_idnumber($idnumber) {
     if (empty($idnumber)) return '-';
     $courseparts = explode('_', $idnumber);
     $ais_courseid = $courseparts[0];
-    if (empty($ais_courseid)) return '-';
+    if (empty($ais_courseid)) return $idnumber;
     return $ais_courseid;
 }
 
@@ -344,3 +265,54 @@ function get_user_fullname_by_uid($uid) {
 }
 
 
+function local_statistics_get_course_modules_count($courseid) {
+    global $DB;
+
+
+    $coursemodules = $DB->get_records_sql('SELECT
+            m.`name`,
+            count(*) as count,
+            cm.module
+        FROM
+            mdl_course_modules AS cm
+        RIGHT JOIN mdl_modules as m ON cm.module = m.id
+        WHERE
+            cm.course = ' . $courseid . '
+        GROUP BY
+            cm.module');
+
+    $count = new stdClass();
+    $count->other = 0;
+
+    foreach ($coursemodules as $cm) {
+        $module = $cm->name;
+        if (in_array($module, ACTIVITES_LIST) or in_array($module, RESOURCES_LIST)) {
+            $count->$module = $cm->count;
+        } else {
+            $count->other += $cm->count;
+        }
+    }
+
+    return $count;
+}
+
+function local_statistics_get_teachers($courseidnumber, $teachers) {
+    if (empty($courseidnumber)) {
+        $tnames = array();
+        foreach ($teachers as $t) {
+            $tnames[] = $t->firstname . ' ' . $t->lastname;
+        }
+        return implode(', ', $tnames);
+    } else {
+        return get_user_fullname_by_uid(local_statistics_get_uid_from_idnumber($courseidnumber));
+    }
+}
+
+function local_statistics_set_default_fields(&$dataobject) {
+    foreach (ACTIVITES_LIST as $a) {
+        $dataobject->$a = 0;
+    }
+    foreach (RESOURCES_LIST as $r) {
+        $dataobject->$r = 0;
+    }
+}

@@ -42,7 +42,7 @@ class cron_task extends \core\task\scheduled_task {
     public function execute() {
         global $CFG;
         require_once($CFG->dirroot . '/local/statistics/lib.php');
-        local_get_statistic();
+        local_statistic_get();
     }
 
 }
