@@ -11,42 +11,7 @@
 require_once('../../config.php');
 require_once('lib.php');
 require_once('../../lib/moodlelib.php');
-//$a = 'A';
-//for ($i = 0; $i < 30; $i++) {
-//    echo $a . '<br>';
-//    $a++;
-//}
-//
-//die;
-//$columnstitles = [
-//    'Kurso pavadinimas',
-//    'Modulio kodas',
-//    'Fakultetas (kategorija)',
-//    'Katedra (sub-kategorija)',
-//    'Kurso autorius',
-//    'Registruotų dėstytojų skaičius',
-//    'Aktyvių studentų skaičius',
-//    'Paskutinė dėstytojo apsilankymo data',
-//    'Registruotų studentų skaičius',
-//    'Aktyvių studentų skaičius',
-//    'Paskutinė studento apsilankymo data',
-//    'Failai / File',
-//    'Puslapis / Page',
-//    'URL',
-//    'Knyga / Book',
-//    'Kiti',
-//    'Užduočių skaičius',
-//    'Diskusijų skaičius',
-//    'Diskusijų forumų žinučių skaičius',
-//    'Vaizdo paskaitų skaičius',
-//    'Testų skaičius',
-//    'Klausimų skaičius testuose',
-//    'Studentų įkeltų darbų skaičius',
-//    'Žodynų skaičius',
-//    'Žodynuose esančių terminų skaičius',
-//    'Kitos veiklos',
-//    'Statistikos surinkimo data'
-//    ];
+
 $columnstitles = [
     get_string('coursename', 'local_statistics'),
     get_string('idnumber', 'local_statistics'),
@@ -97,41 +62,11 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
         ->setTitle("Statistika " . date('Y-m-d H:i:s', time()))
         ->setDescription("Dokumentas, kuriame yra moodle kursų statistika");
 
-//    $objPHPExcel->setActiveSheetIndex(0)
-//        ->setCellValue('A1', 'Kurso pavadinimas')
-//        ->setCellValue('B1', 'Modulio kodas')
-//        ->setCellValue('C1', 'Fakultetas (kategorija)')
-//        ->setCellValue('D1', 'Katedra (sub-kategorija)')
-//        ->setCellValue('E1', 'Kurso autorius')
-//        ->setCellValue('F1', 'Registruotų dėstytojų skaičius')
-//        ->setCellValue('G1', 'Aktyvių dėstytojų skaičius')
-//        ->setCellValue('H1', 'Paskutinė dėstytojo apsilankymo data')
-//        ->setCellValue('I1', 'Registruotų studentų skaičius')
-//        ->setCellValue('J1', 'Aktyvių studentų skaičius')
-//        ->setCellValue('K1', 'Paskutinė studento apsilankymo data')
-//        ->setCellValue('L1', 'Failai / File')
-//        ->setCellValue('M1', 'Puslapis / Page')
-//        ->setCellValue('N1', 'URL')
-//        ->setCellValue('O1', 'Knyga / Book')
-//        ->setCellValue('P1', 'Kiti')
-//        ->setCellValue('Q1', 'Užduočių skaičius')
-//        ->setCellValue('R1', 'Diskusijų skaičius')
-//        ->setCellValue('S1', 'Diskusijų forumų žinučių skaičius')
-//        ->setCellValue('T1', 'Vaizdo paskaitų skaičius')
-//        ->setCellValue('U1', 'Testų skaičius')
-//        ->setCellValue('V1', 'Klausimų skaičius testuose')
-//        ->setCellValue('W1', 'Studentų įkeltų darbų skaičius')
-//        ->setCellValue('X1', 'Žodynų skaičius')
-//        ->setCellValue('Y1', 'Žodynuose esančių terminų skaičius')
-//        ->setCellValue('Z1', 'Kitos veiklos')
-//        ->setCellValue('AA1', 'Statistikos surinkimo data');
-
     $column = 'A';
     foreach ($columnstitles as $cs) {
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column . '1', $cs);
         $column++;
     }
-
 
     $objPHPExcel->getActiveSheet()->freezePane('A2');
     $column = 'A';
@@ -146,25 +81,6 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
     $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(30);
 
     $objPHPExcel->getActiveSheet()->getRowDimension(1)->setRowHeight(30);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
-//
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(20);
-//
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('R')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('S')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('T')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('U')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('V')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('W')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('X')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('Y')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('Z')->setWidth(20);
-//    $objPHPExcel->getActiveSheet()->getColumnDimension('AA')->setWidth(20);
 
     $objPHPExcel->getActiveSheet()->getStyle('A1:AZ1')->getFont()->setBold(true);
     $objPHPExcel->getActiveSheet()->getStyle('A1:AZ1')->getAlignment()->setWrapText(true);
@@ -173,41 +89,6 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
     $data = $DB->get_records_sql('SELECT * FROM mdl_statistics');
     $c = 2;
     foreach ($data as $d) {
-//        $objPHPExcel->setActiveSheetIndex(0)
-//            ->setCellValue('A' . $c, $d->coursename)
-//            ->setCellValue('B' . $c, $d->idnumber)
-//            ->setCellValue('C' . $c, $d->subcategory)
-//            ->setCellValue('D' . $c, $d->category)
-//            ->setCellValue('E' . $c, $d->teachers)
-//            ->setCellValue('F' . $c, $d->teachers_count)
-//            ->setCellValue('G' . $c, $d->active_teachers)
-//            ->setCellValue('H' . $c, $d->teacher_last_access)
-//            ->setCellValue('I' . $c, $d->students_count)
-//            ->setCellValue('J' . $c, $d->active_students)
-//            ->setCellValue('K' . $c, $d->student_last_access)
-//            ->setCellValue('L' . $c, $d->resource)
-//            ->setCellValue('M' . $c, $d->page)
-//            ->setCellValue('N' . $c, $d->url)
-//            ->setCellValue('O' . $c, $d->book)
-//            ->setCellValue('P' . $c, $d->other)
-//            ->setCellValue('Q' . $c, $d->assign)
-//            ->setCellValue('R' . $c, $d->forum)
-//            ->setCellValue('S' . $c, $d->forum_posts)
-//            ->setCellValue('T' . $c, $d->quiz)
-//            ->setCellValue('U' . $c, $d->quiz_questions)
-//            ->setCellValue('V' . $c, $d->files)
-//            ->setCellValue('W' . $c, $d->glossary)
-//            ->setCellValue('X' . $c, $d->glossary_entries)
-//            ->setCellValue('Z' . $c, $d->wiki)
-//            ->setCellValue('AA' . $c, $d->data)
-//            ->setCellValue('AB' . $c, $d->choice)
-//            ->setCellValue('AC' . $c, $d->lesson)
-//            ->setCellValue('AD' . $c, $d->feedback)
-//            ->setCellValue('AE' . $c, $d->attendance)
-//            ->setCellValue('AF' . $c, $d->folder)
-//            ->setCellValue('AG' . $c, $d->imscp)
-//            ->setCellValue('AH' . $c, $d->label)
-//            ->setCellValue('AI' . $c, $d->date);
         $column = 'A';
         $dataOrder = [
             $d->coursename,
