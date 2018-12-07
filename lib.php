@@ -91,18 +91,12 @@ function local_statistic_get()
 
         isset($questionCount[$coursecontext->id]) ? $d->quiz_questions = (int)$questionCount[$coursecontext->id]->count : $d->quiz_questions  = 0;
 
-        $filessql = 'SELECT
-        mdl_course_modules.course,
-        count(1) as count
-        FROM
-            mdl_course_modules
-        JOIN mdl_context on mdl_context.instanceid = mdl_course_modules.id
-        JOIN mdl_files on mdl_context.id = mdl_files.contextid
-        WHERE
-            course = ' . $id . ' and mdl_course_modules.module = 23 and mdl_files.filesize > 0 ';
+        $filessql = "SELECT a.course AS course, SUM(af.numfiles) AS count
+            FROM {assignsubmission_file} AS af
+            INNER JOIN {assign} AS a ON a.id = af.assignment 
+            WHERE a.course = $id
+            GROUP BY a.course ";
 
-        if (!empty($interval1)) $filessql .= ' and mdl_files.timecreated > ' . $interval1 ;
-        if (!empty($interval2)) $filessql .= ' and mdl_files.timecreated < ' . $interval2;
         $files = $DB->get_records_sql($filessql);
 
         isset($files[$id]) ? $d->files = (int)$files[$id]->count : $d->files = 0;
