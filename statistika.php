@@ -46,6 +46,9 @@ $columnstitles = [
     get_string('folder', 'local_statistics'),
     get_string('imscp', 'local_statistics'),
     get_string('label', 'local_statistics'),
+    get_string('workshop', 'local_statistics'),
+    get_string('epas', 'local_statistics'),
+    get_string('epas_files', 'local_statistics'),
     get_string('date', 'local_statistics'),
 ];
 
@@ -124,6 +127,9 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
             $d->folder,
             $d->imscp,
             $d->label,
+            $d->workshop,
+            $d->epas,
+            $d->epas_files,
             $d->date
             ];
         foreach ($dataOrder as $do) {

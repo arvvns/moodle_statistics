@@ -1,6 +1,6 @@
 <?php
 // Needs field in db table
-define('ACTIVITES_LIST',  ["assign", "quiz", "glossary", "forum", "wiki", "data", "choice", "lesson", "feedback", "attendance"]);
+define('ACTIVITES_LIST',  ["assign", "quiz", "glossary", "forum", "wiki", "data", "choice", "lesson", "feedback", "attendance", "workshop"]);
 define('RESOURCES_LIST',  ["folder", "imscp", "label", "page", "resource", "url", "book"]);
 
 function local_statistic_get()
@@ -80,6 +80,25 @@ function local_statistic_get()
 
         isset($posts[$id]) ? $d->forum_posts = (int)$posts[$id]->count : $d->forum_posts = 0;
 
+        $d->forum_notnews = 0;
+        $forum_notnews = $DB->get_record_sql("SELECT course, COUNT(*) AS `count`
+            FROM {forum} 
+            WHERE `type` != 'news' AND course = ?
+            GROUP BY course", array($id));
+        if (!empty($forum_notnews)) {
+            $d->forum_notnews = $forum_notnews->count;
+        }
+
+        $d->forum_notnews_posts = 0;
+        $forum_notnews_posts = $DB->get_record_sql("SELECT f.course, COUNT(*) AS `count`
+            FROM mdl_forum AS f
+            INNER JOIN mdl_forum_discussions d ON d.forum = f.id AND f.`type` != 'news' AND f.course = ?
+            INNER JOIN mdl_forum_posts AS p ON p.discussion = d.id
+            GROUP BY f.course", array($id));
+        if (!empty($forum_notnews_posts)) {
+            $d->forum_notnews_posts = $forum_notnews_posts->count;
+        }
+
         $questionCount = $DB->get_records_sql('SELECT
             mdl_question_categories.contextid,
             count(1) as count
@@ -112,6 +131,31 @@ function local_statistic_get()
             mdl_glossary.course = ' . $id);
 
         isset($glossaryEntries[$id]) ? $d->gossary_entries = (int)$glossaryEntries[$id]->count : $d->glossary_entries = 0;
+
+        $d->epas = 0;
+        $d->epas_files = 0;
+
+        $plagiarismsettings = get_config('plagiarism');
+        if (!empty($plagiarismsettings->epas_use) and $plagiarismsettings->epas_use = 1) {
+            // Get how many course modules using plagiarism epas
+            $epas_count = $DB->get_record_sql("SELECT cm.course, COUNT(*) AS count 
+                FROM  {plagiarism_epas_config} ec 
+                INNER JOIN {course_modules} cm ON ec.cm = cm.id AND ec.value = 1 AND cm.course = ?
+                GROUP BY cm.course", array($id));
+
+            if (!empty($epas_count) and $epas_count->count > 0) {
+                $d->epas = $epas_count->count;
+            }
+
+            $epas_files_count = $DB->get_record_sql("SELECT cm.course, COUNT(*) AS count 
+                FROM {plagiarism_epas_files} AS ef
+                INNER JOIN mdl_course_modules AS cm ON ef.cm = cm.id AND cm.course = ? 
+                GROUP BY cm.course", array($id));
+
+            if (!empty($epas_files_count) and $epas_files_count->count > 0) {
+                $d->epas_files = $epas_files_count->count;
+            }
+        }
 
         $d->date = date('Y-m-d H:i:s', time());
 

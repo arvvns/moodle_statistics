@@ -53,4 +53,7 @@ $string['attendance'] = 'Lankomumo skaičius / Attendance';
 $string['folder'] = 'Katalogas / Folder';
 $string['imscp'] = 'Imcp';
 $string['label'] = 'Žymos / Label';
+$string['workshop'] = 'Workshop';
+$string['epas'] = 'Epas';
+$string['epas_files'] = 'Epas files';
 $string['date'] = 'Statistikos surinkimo data';

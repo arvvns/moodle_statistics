@@ -7,15 +7,6 @@ function xmldb_local_statistics_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
-//    if ($oldversion < 2018090606) {
-//        if ($dbman->table_exists('statistics')) {
-//            $table = new xmldb_table('statistics');
-//            $dbman->drop_table($table);
-//        }
-//        if (file_exists($CFG->dirroot . '/local/statistics/db/install.xml')) {
-//            $dbman->install_from_xmldb_file($CFG->dirroot . '/local/statistics/db/install.xml');
-//        }
-//    }
 
     if ($oldversion < 2018090612) {
 
@@ -78,6 +69,49 @@ function xmldb_local_statistics_upgrade($oldversion) {
 
         // Statistics savepoint reached.
         upgrade_plugin_savepoint(true, 2018090612, 'local', 'statistics');
+    }
+
+    if ($oldversion < 2018120701) {
+        $table = new xmldb_table('statistics');
+
+        $field_workshop = new xmldb_field('workshop', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'label');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field_workshop)) {
+            $dbman->add_field($table, $field_workshop);
+        }
+
+        $field_epas = new xmldb_field('epas', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'workshop');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field_epas)) {
+            $dbman->add_field($table, $field_epas);
+        }
+
+        $field_epas_files = new xmldb_field('epas_files', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'epas');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field_epas_files)) {
+            $dbman->add_field($table, $field_epas_files);
+        }
+
+        $field_forum_notnews = new xmldb_field('forum_notnews', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'forum_posts');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field_forum_notnews)) {
+            $dbman->add_field($table, $field_forum_notnews);
+        }
+
+        $field_forum_notnews_posts = new xmldb_field('forum_notnews_posts', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'forum_notnews');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field_forum_notnews_posts)) {
+            $dbman->add_field($table, $field_forum_notnews_posts);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2018120701, 'local', 'statistics');
+
     }
 
     return true;

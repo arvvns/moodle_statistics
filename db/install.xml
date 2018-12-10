@@ -1,54 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/statistics/db" VERSION="20130520" COMMENT="XMLDB file for Moodle mod"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
-        >
-    <TABLES>
-        <TABLE NAME="statistics" COMMENT="For statistics storage">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"/>
-                <FIELD NAME="courseid" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0"  UNSIGNED="true" SEQUENCE="false" />
-                <FIELD NAME="coursename" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="idnumber" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="subcategory" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="category" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="teachers" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="teachers_count" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="active_teachers" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="teacher_last_access" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="students_count" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="active_students" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="student_last_access" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="resource" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="page" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="url" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="book" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="assign" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="forum" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="forum_posts" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="quiz" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="quiz_questions" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="files" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="glossary" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="glossary_entries" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="wiki" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="data" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="choice" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="lesson" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="feedback" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="attendance" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="folder" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="imscp" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="label" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="other" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="date" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key"/>
-            </KEYS>
-            <INDEXES>
-                <INDEX NAME="courseid_index" UNIQUE="true" FIELDS="courseid" COMMENT="Indeksas"/>
-            </INDEXES>
-        </TABLE>
-    </TABLES>
+<XMLDB PATH="local/statistics/db" VERSION="20181207" COMMENT="XMLDB file for Moodle mod"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="statistics" COMMENT="For statistics storage">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="coursename" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="idnumber" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="subcategory" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="category" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="teachers" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="teachers_count" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="active_teachers" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="teacher_last_access" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="students_count" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="active_students" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="student_last_access" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="resource" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="page" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="url" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="book" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="assign" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="forum" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="forum_posts" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="forum_notnews" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="forum_notnews_posts" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="quiz" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="quiz_questions" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="files" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="glossary" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="glossary_entries" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="wiki" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="data" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="choice" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="lesson" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="feedback" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="attendance" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="folder" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="imscp" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="label" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="workshop" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="epas" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="epas_files" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="other" TYPE="int" LENGTH="13" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="date" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="courseid_index" UNIQUE="true" FIELDS="courseid" COMMENT="Indeksas"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
 </XMLDB>
