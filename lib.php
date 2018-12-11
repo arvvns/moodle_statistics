@@ -49,7 +49,7 @@ function local_statistic_get()
         $teachers = local_statistics_get_users_from_course(3, $enrolinstances, $coursecontext->id);
         $data = local_statistics_get_user_data($teachers);
 
-        $d->teachers = local_statistics_get_teachers($courseidnumber, $teachers);
+        $d->teachers = substr(local_statistics_get_teachers($courseidnumber, $teachers), 0, 255);
         $d->teachers_count = $data[0];
         $d->active_teachers = $data[1];
         if($data[2]>0)
@@ -122,15 +122,15 @@ function local_statistic_get()
 
 
         $glossaryEntries = $DB->get_records_sql('SELECT
-            course,
-            count(1) AS count
+            g.course,
+            COUNT(1) AS count
         FROM
-            mdl_glossary
-        JOIN mdl_glossary_entries on mdl_glossary.id = mdl_glossary_entries.glossaryid
+            {glossary} AS g
+        JOIN {glossary_entries} AS ge ON g.id = ge.glossaryid
         WHERE
-            mdl_glossary.course = ' . $id);
+            g.course = ?', array($id));
 
-        isset($glossaryEntries[$id]) ? $d->gossary_entries = (int)$glossaryEntries[$id]->count : $d->glossary_entries = 0;
+        isset($glossaryEntries[$id]) ? $d->glossary_entries = (int)$glossaryEntries[$id]->count : $d->glossary_entries = 0;
 
         $d->epas = 0;
         $d->epas_files = 0;
