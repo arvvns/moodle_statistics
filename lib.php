@@ -7,7 +7,6 @@ function local_statistic_get()
 {
     global $DB;
 
-    //TODO i modulio configa perkelt
      //turi būti užkonfiginta
     $interval_start = get_config('local_statistics', 'interval_start');
     $interval_end = get_config('local_statistics', 'interval_end');
@@ -72,9 +71,9 @@ function local_statistic_get()
         f.course,
         count(1) as count
         FROM
-            mdl_forum AS f
-        JOIN mdl_forum_discussions AS d ON f.id = d.forum
-        JOIN mdl_forum_posts AS p ON p.discussion = d.id
+            {forum} AS f
+        JOIN {forum_discussions} AS d ON f.id = d.forum
+        JOIN {forum_posts} AS p ON p.discussion = d.id
         WHERE
             f.course = ' . $id);
 
@@ -91,22 +90,22 @@ function local_statistic_get()
 
         $d->forum_notnews_posts = 0;
         $forum_notnews_posts = $DB->get_record_sql("SELECT f.course, COUNT(*) AS `count`
-            FROM mdl_forum AS f
-            INNER JOIN mdl_forum_discussions d ON d.forum = f.id AND f.`type` != 'news' AND f.course = ?
-            INNER JOIN mdl_forum_posts AS p ON p.discussion = d.id
+            FROM {forum} AS f
+            INNER JOIN {forum_discussions} d ON d.forum = f.id AND f.`type` != 'news' AND f.course = ?
+            INNER JOIN {forum_posts} AS p ON p.discussion = d.id
             GROUP BY f.course", array($id));
         if (!empty($forum_notnews_posts)) {
             $d->forum_notnews_posts = $forum_notnews_posts->count;
         }
 
         $questionCount = $DB->get_records_sql('SELECT
-            mdl_question_categories.contextid,
-            count(1) as count
+            qc.contextid,
+            COUNT(1) as count
         FROM
-            mdl_question_categories
-        JOIN mdl_question on mdl_question.category = mdl_question_categories.id
+            {question_categories} AS qc
+        JOIN {question} AS q ON q.category = qc.id
         WHERE
-            mdl_question_categories.contextid = ' . $coursecontext->id . ' and mdl_question.parent = 0');
+            qc.contextid = ' . $coursecontext->id . ' and q.parent = 0');
 
         isset($questionCount[$coursecontext->id]) ? $d->quiz_questions = (int)$questionCount[$coursecontext->id]->count : $d->quiz_questions  = 0;
 
@@ -149,7 +148,7 @@ function local_statistic_get()
 
             $epas_files_count = $DB->get_record_sql("SELECT cm.course, COUNT(*) AS count 
                 FROM {plagiarism_epas_files} AS ef
-                INNER JOIN mdl_course_modules AS cm ON ef.cm = cm.id AND cm.course = ? 
+                INNER JOIN {course_modules} AS cm ON ef.cm = cm.id AND cm.course = ? 
                 GROUP BY cm.course", array($id));
 
             if (!empty($epas_files_count) and $epas_files_count->count > 0) {
@@ -162,7 +161,7 @@ function local_statistic_get()
         $coursemodulescount = local_statistics_get_course_modules_count($id);
         $d = (object) array_merge((array) $d, (array) $coursemodulescount);
 
-        $exists = $DB->get_records_sql("SELECT * FROM mdl_statistics WHERE courseid = ".$id);
+        $exists = $DB->get_records_sql("SELECT * FROM {statistics} WHERE courseid = ".$id);
 
         if(count($exists) == 1) {
             $d->id = key($exists);
@@ -201,17 +200,17 @@ function local_statistics_get_users_from_course($roleid, $enrols, $context)
         u.lastname,
         u.lastaccess
     FROM
-        mdl_user u
-    JOIN mdl_user_enrolments ue ON (
+        {user} u
+    JOIN {user_enrolments} ue ON (
         ue.userid = u.id
         $t
     )
-    JOIN mdl_enrol e ON (e.id = ue.enrolid)
-    LEFT JOIN mdl_user_lastaccess ul ON (
+    JOIN {enrol} e ON (e.id = ue.enrolid)
+    LEFT JOIN {user_lastaccess} ul ON (
         ul.courseid = e.courseid
         AND ul.userid = u.id
     )
-    LEFT JOIN mdl_groups_members gm ON u.id = gm.userid
+    LEFT JOIN {groups_members} gm ON u.id = gm.userid
     WHERE
         u.id <> 1
     AND u.deleted = 0
@@ -220,7 +219,7 @@ function local_statistics_get_users_from_course($roleid, $enrols, $context)
         SELECT
             COUNT(1)
         FROM
-            mdl_role_assignments ra
+            {role_assignments} ra
         WHERE
             ra.userid = u.id
         AND ra.roleid = $roleid
@@ -312,8 +311,8 @@ function local_statistics_get_course_modules_count($courseid) {
             count(*) as count,
             cm.module
         FROM
-            mdl_course_modules AS cm
-        RIGHT JOIN mdl_modules as m ON cm.module = m.id
+            {course_modules} AS cm
+        RIGHT JOIN {modules} as m ON cm.module = m.id
         WHERE
             cm.course = ' . $courseid . '
         GROUP BY
