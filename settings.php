@@ -1,5 +1,8 @@
 <?php
 defined('MOODLE_INTERNAL') || die;
+
+require_once($CFG->dirroot.'/local/statistics/lib.php');
+
 global $PAGE, $COURSE;
 
 if ($hassiteconfig) {
@@ -20,5 +23,7 @@ if ($hassiteconfig) {
     $settings->add( new admin_setting_configtext('local_statistics/interval_end', get_string('interval_end', 'local_statistics'),
         get_string('interval_end_desc', 'local_statistics'), '17-12-20', PARAM_TEXT));
 
+    $settings->add( new admin_setting_configtext('local_statistics/export_fields', get_string('export_fields', 'local_statistics'),
+        get_string('export_fields_desc', 'local_statistics'), implode(",", EXPORT_FIELDS), PARAM_TEXT));
 
 }
