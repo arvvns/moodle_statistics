@@ -16,8 +16,8 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
         $export_fields = EXPORT_FIELDS;
     } else {
         $export_fields = explode(',', $export_fields_conf);
-
     }
+
     $objPHPExcel->getProperties()->setCreator("emtc")
         ->setLastModifiedBy("emtc")
         ->setTitle("Statistika " . date('Y-m-d H:i:s', time()))
