@@ -4,7 +4,7 @@ define('ACTIVITES_LIST',  ["assign", "quiz", "glossary", "forum", "wiki", "data"
 define('RESOURCES_LIST',  ["folder", "imscp", "label", "page", "resource", "url", "book"]);
 define('EXPORT_FIELDS',  ['coursename', 'idnumber', 'subcategory', 'category', 'teachers', 'teachers_count',
     'active_teachers', 'teacher_last_access', 'students_count', 'active_students', 'student_last_access', 'resource',
-    'page', 'url', 'book', 'other', 'assign', 'forum', 'forum_posts', 'quiz', 'quiz_questions', 'files', 'glossary',
+    'page', 'url', 'book', 'other', 'assign', 'forum', 'forum_posts', 'forum_notnews', 'forum_notnews_posts','quiz', 'quiz_questions', 'files', 'glossary',
     'glossary_entries', 'wiki', 'data', 'choice', 'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label',
     'workshop', 'epas', 'epas_files', 'date']);
 
