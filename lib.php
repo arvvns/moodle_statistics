@@ -284,7 +284,10 @@ function local_statistics_extend_settings_navigation(settings_navigation $nav, c
 function local_statistics_get_uid_from_idnumber($idnumber) {
     if (empty($idnumber)) return '';
     $courseparts = explode('_', $idnumber);
-    $uid = $courseparts[1];
+    $uid = '';
+    if (!empty($courseparts[1])) {
+        $uid = $courseparts[1];
+    }
     if (empty($uid)) return '';
     return $uid;
 }
@@ -292,7 +295,11 @@ function local_statistics_get_uid_from_idnumber($idnumber) {
 function get_ais_courseid_from_idnumber($idnumber) {
     if (empty($idnumber)) return '-';
     $courseparts = explode('_', $idnumber);
-    $ais_courseid = $courseparts[0];
+    $ais_courseid = '';
+    if (!empty($courseparts[0])) {
+        $ais_courseid = $courseparts[0];
+    }
+
     if (empty($ais_courseid)) return $idnumber;
     return $ais_courseid;
 }
