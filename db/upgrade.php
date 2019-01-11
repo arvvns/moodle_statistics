@@ -114,5 +114,18 @@ function xmldb_local_statistics_upgrade($oldversion) {
 
     }
 
+    if ($oldversion < 2019011100) {
+        $table = new xmldb_table('statistics');
+
+        $field_quiz_attempts= new xmldb_field('quiz_attempts', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'other');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field_quiz_attempts)) {
+            $dbman->add_field($table, $field_quiz_attempts);
+        }
+
+        upgrade_plugin_savepoint(true, 2019011100, 'local', 'statistics');
+    }
+
     return true;
 }

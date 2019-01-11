@@ -161,6 +161,16 @@ function local_statistic_get()
             }
         }
 
+        // quiz attempts counts by course
+        $d->quiz_attempts = 0;
+        $quiz_attempts = $DB->get_record_sql("SELECT q.course AS course, COUNT(qa.id) AS attempts_count
+            FROM mdl_quiz_attempts AS qa
+            INNER JOIN mdl_quiz AS q on qa.quiz = q.id AND q.course = ?
+            GROUP BY q.course", array($id));
+        if (!empty($quiz_attempts->attempts_count) and $quiz_attempts->attempts_count > 0) {
+            $d->quiz_attempts = $quiz_attempts->attempts_count;
+        }
+
         $d->date = date('Y-m-d H:i:s', time());
 
         $coursemodulescount = local_statistics_get_course_modules_count($id);
