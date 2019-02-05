@@ -47,7 +47,7 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
     $objPHPExcel->getActiveSheet()->getStyle('A1:AZ1')->getAlignment()->setWrapText(true);
 
 
-    $data = $DB->get_records_sql('SELECT * FROM mdl_statistics');
+    $data = $DB->get_records_sql('SELECT * FROM {statistics}');
     $c = 2;
     foreach ($data as $d) {
         $column = 'A';

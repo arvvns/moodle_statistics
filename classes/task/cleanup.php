@@ -23,8 +23,8 @@ class cleanup extends \core\task\scheduled_task {
 
 
         $sql = "select stat.courseid 
-            from mdl_statistics stat 
-            left join mdl_course c on stat.courseid = c.id
+            from {statistics} stat 
+            left join {course} c on stat.courseid = c.id
             where c.id is null;";
 
         $deleted_courses = $DB->get_records_sql($sql);

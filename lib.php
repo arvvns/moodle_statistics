@@ -164,8 +164,8 @@ function local_statistic_get()
         // quiz attempts counts by course
         $d->quiz_attempts = 0;
         $quiz_attempts = $DB->get_record_sql("SELECT q.course AS course, COUNT(qa.id) AS attempts_count
-            FROM mdl_quiz_attempts AS qa
-            INNER JOIN mdl_quiz AS q on qa.quiz = q.id AND q.course = ?
+            FROM {quiz_attempts} AS qa
+            INNER JOIN {quiz} AS q on qa.quiz = q.id AND q.course = ?
             GROUP BY q.course", array($id));
         if (!empty($quiz_attempts->attempts_count) and $quiz_attempts->attempts_count > 0) {
             $d->quiz_attempts = $quiz_attempts->attempts_count;
