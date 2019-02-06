@@ -53,7 +53,7 @@ function local_statistic_get()
         $teachers = local_statistics_get_users_from_course(3, $enrolinstances, $coursecontext->id);
         $data = local_statistics_get_user_data($teachers);
 
-        $d->teachers = substr(local_statistics_get_teachers($courseidnumber, $teachers), 0, 255);
+        $d->teachers = mb_substr(local_statistics_get_teachers($courseidnumber, $teachers), 0, 255);
         $d->teachers_count = $data[0];
         $d->active_teachers = $data[1];
         if($data[2]>0)
