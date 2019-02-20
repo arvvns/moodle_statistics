@@ -61,3 +61,4 @@ $string['epas_files'] = 'Epas files';
 $string['date'] = 'Statistikos surinkimo data';
 $string['quiz_attempts'] = 'Testo bandymų sk.';
 $string['courseid'] = 'Kurso Id';
+$string['hvp'] = 'HVP(h5p)';

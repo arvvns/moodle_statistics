@@ -56,5 +56,6 @@ $string['epas_files'] = 'Epas files';
 $string['date'] = 'Date';
 $string['quiz_attempts'] = 'Quiz attempts';
 $string['courseid'] = 'Course Id';
+$string['hvp'] = 'HVP(h5p)';
 
 
