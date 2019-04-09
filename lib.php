@@ -18,6 +18,7 @@ function local_statistic_get()
     $interval1 = (!empty($interval_start))? strtotime($interval_start) : null;
     $interval2 = (!empty($interval_end))? strtotime($interval_end) : null;
 
+
     mtrace("Generuojama kursų statistika");
 
     $courseCount = get_config('local_statistics', 'course_per_cron');
@@ -189,6 +190,9 @@ function local_statistic_get()
             set_config('last_course_id', $id, 'local_statistics');
         else
             set_config('last_course_id', 1, 'local_statistics');
+
+        sendDataToElasticsearch((array)$d);
+
     }
     mtrace("Sugeneruoti " . count($ids) . " kursai");
     return true;
@@ -375,3 +379,35 @@ function local_statistics_set_default_fields(&$dataobject) {
         $dataobject->$r = 0;
     }
 }
+
+function HTTPPostJson($url, array $params) {
+    $data_string = json_encode($params);
+
+    $ch    = curl_init();
+    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data_string))
+    );
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
+function sendDataToElasticsearch($courseData) {
+    $elasticsearchUrl = get_config('local_statistics', 'elasticsearch_url');
+
+    $serviceFullUrl = $elasticsearchUrl . '/coursestats/_doc';
+    if (!empty($elasticsearchUrl)) {
+        var_dump(HTTPPostJson($serviceFullUrl, $courseData));
+    }
+}
+
+

@@ -57,5 +57,7 @@ $string['date'] = 'Date';
 $string['quiz_attempts'] = 'Quiz attempts';
 $string['courseid'] = 'Course Id';
 $string['hvp'] = 'HVP(h5p)';
+$string['elasticsearch_url'] = 'ElasticSearch Url';
+$string['elasticsearch_url_desc'] = 'ElasticSearch Url';
 
 

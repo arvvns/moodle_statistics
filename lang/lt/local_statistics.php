@@ -62,3 +62,5 @@ $string['date'] = 'Statistikos surinkimo data';
 $string['quiz_attempts'] = 'Testo bandymų sk.';
 $string['courseid'] = 'Kurso Id';
 $string['hvp'] = 'HVP(h5p)';
+$string['elasticsearch_url'] = 'ElasticSearch Url';
+$string['elasticsearch_url_desc'] = 'ElasticSearch Url';
