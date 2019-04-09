@@ -127,7 +127,7 @@ function xmldb_local_statistics_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019011100, 'local', 'statistics');
     }
 
-    if ($oldversion < 20190220000) {
+    if ($oldversion < 2019022000) {
         $table = new xmldb_table('statistics');
 
         $field_quiz_attempts= new xmldb_field('hvp', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'epas_files');
@@ -137,7 +137,7 @@ function xmldb_local_statistics_upgrade($oldversion) {
             $dbman->add_field($table, $field_quiz_attempts);
         }
 
-        upgrade_plugin_savepoint(true, 2019022000, 'local', 'statistics');
+        upgrade_plugin_savepoint(true, 201902200, 'local', 'statistics');
     }
 
     return true;
