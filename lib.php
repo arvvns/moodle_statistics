@@ -91,7 +91,7 @@ function local_statistic_get()
             WHERE `type` != 'news' AND course = ?
             GROUP BY course", array($id));
         if (!empty($forum_notnews)) {
-            $d->forum_notnews = $forum_notnews->count;
+            $d->forum_notnews = intval($forum_notnews->count);
         }
 
         $d->forum_notnews_posts = 0;
@@ -101,7 +101,7 @@ function local_statistic_get()
             INNER JOIN {forum_posts} AS p ON p.discussion = d.id
             GROUP BY f.course", array($id));
         if (!empty($forum_notnews_posts)) {
-            $d->forum_notnews_posts = $forum_notnews_posts->count;
+            $d->forum_notnews_posts = intval($forum_notnews_posts->count);
         }
 
         $questionCount = $DB->get_records_sql('SELECT
@@ -149,7 +149,7 @@ function local_statistic_get()
                 GROUP BY cm.course", array($id));
 
             if (!empty($epas_count) and $epas_count->count > 0) {
-                $d->epas = $epas_count->count;
+                $d->epas = intval($epas_count->count);
             }
 
             $epas_files_count = $DB->get_record_sql("SELECT cm.course, COUNT(*) AS count 
@@ -158,7 +158,7 @@ function local_statistic_get()
                 GROUP BY cm.course", array($id));
 
             if (!empty($epas_files_count) and $epas_files_count->count > 0) {
-                $d->epas_files = $epas_files_count->count;
+                $d->epas_files = intval($epas_files_count->count);
             }
         }
 
@@ -169,7 +169,7 @@ function local_statistic_get()
             INNER JOIN {quiz} AS q on qa.quiz = q.id AND q.course = ?
             GROUP BY q.course", array($id));
         if (!empty($quiz_attempts->attempts_count) and $quiz_attempts->attempts_count > 0) {
-            $d->quiz_attempts = $quiz_attempts->attempts_count;
+            $d->quiz_attempts = intval($quiz_attempts->attempts_count);
         }
 
         $d->date = date('Y-m-d H:i:s', time());
@@ -350,7 +350,7 @@ function local_statistics_get_course_modules_count($courseid) {
     foreach ($coursemodules as $cm) {
         $module = $cm->name;
         if (in_array($module, ACTIVITES_LIST) or in_array($module, RESOURCES_LIST)) {
-            $count->$module = $cm->count;
+            $count->$module = intval($cm->count);
         } else {
             $count->other += $cm->count;
         }
@@ -402,11 +402,15 @@ function HTTPPostJson($url, array $params) {
 }
 
 function sendDataToElasticsearch($courseData) {
+    global $CFG;
     $elasticsearchUrl = get_config('local_statistics', 'elasticsearch_url');
+    $moodleId = get_config('local_statistics', 'elasticsearch_moodle_id');
+    if (empty($moodleId)) $moodleId = $CFG->wwwroot;
+    $courseData['moodle_id'] = $moodleId;
 
     $serviceFullUrl = $elasticsearchUrl . '/coursestats/_doc';
     if (!empty($elasticsearchUrl)) {
-        var_dump(HTTPPostJson($serviceFullUrl, $courseData));
+        HTTPPostJson($serviceFullUrl, $courseData);
     }
 }
 

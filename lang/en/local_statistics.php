@@ -59,5 +59,7 @@ $string['courseid'] = 'Course Id';
 $string['hvp'] = 'HVP(h5p)';
 $string['elasticsearch_url'] = 'ElasticSearch Url';
 $string['elasticsearch_url_desc'] = 'ElasticSearch Url';
+$string['elasticsearch_moodle_id'] = 'ElasticSearch Moodle Id';
+$string['elasticsearch_moodle_id_desc'] = 'Moodle id to filrate in elsaticsearch by moodle';
 
 

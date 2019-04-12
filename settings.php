@@ -29,4 +29,8 @@ if ($hassiteconfig) {
     $settings->add( new admin_setting_configtext('local_statistics/elasticsearch_url', get_string('elasticsearch_url', 'local_statistics'),
         get_string('elasticsearch_url_desc', 'local_statistics'),''));
 
+    $settings->add( new admin_setting_configtext('local_statistics/elasticsearch_moodle_id', get_string('elasticsearch_moodle_id', 'local_statistics'),
+        get_string('elasticsearch_moodle_id_desc', 'local_statistics'),''));
+
+
 }
