@@ -38,5 +38,14 @@ $tasks = array(
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*'
+    ),
+    array(
+        'classname' => 'local_statistics\task\moodle_stats_task',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '23',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*'
     )
 );

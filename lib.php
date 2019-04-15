@@ -191,7 +191,7 @@ function local_statistic_get()
         else
             set_config('last_course_id', 1, 'local_statistics');
 
-        sendDataToElasticsearch((array)$d);
+        send_data_to_elasticsearch((array)$d);
 
     }
     mtrace("Sugeneruoti " . count($ids) . " kursai");
@@ -380,7 +380,7 @@ function local_statistics_set_default_fields(&$dataobject) {
     }
 }
 
-function HTTPPostJson($url, array $params) {
+function http_post_json($url, array $params) {
     $data_string = json_encode($params);
 
     $ch    = curl_init();
@@ -401,17 +401,38 @@ function HTTPPostJson($url, array $params) {
     return $response;
 }
 
-function sendDataToElasticsearch($courseData) {
+function get_moodle_id() {
     global $CFG;
-    $elasticsearchUrl = get_config('local_statistics', 'elasticsearch_url');
+
     $moodleId = get_config('local_statistics', 'elasticsearch_moodle_id');
     if (empty($moodleId)) $moodleId = $CFG->wwwroot;
-    $courseData['moodle_id'] = $moodleId;
+    return $moodleId;
+}
 
-    $serviceFullUrl = $elasticsearchUrl . '/coursestats/_doc';
+function send_data_to_elasticsearch($courseData, $doc = 'coursestats') {
+    $elasticsearchUrl = get_config('local_statistics', 'elasticsearch_url');
+
+    $courseData['moodle_id'] = get_moodle_id();
+
+    $serviceFullUrl = $elasticsearchUrl . '/' . $doc . '/_doc';
     if (!empty($elasticsearchUrl)) {
-        HTTPPostJson($serviceFullUrl, $courseData);
+        http_post_json($serviceFullUrl, $courseData);
     }
+}
+
+function collect_moodle_statistic() {
+    global $DB;
+    $usersCount = $DB->get_record_sql("SELECT COUNT(*) AS users_count FROM {user} WHERE deleted = 0");
+    $activeUsersCount = $DB->get_record_sql("SELECT COUNT(*) AS active_users_count FROM {user} WHERE (UNIX_TIMESTAMP(NOW()) - lastaccess) < 1209600 ");
+//    var_dump($usersCount, $activeUsersCount);
+
+    $data = array(
+        'users_count' => intval($usersCount->users_count),
+        'active_users_count' => intval($activeUsersCount->active_users_count),
+        'date' => date('Y-m-d H:i:s')
+    );
+
+    send_data_to_elasticsearch($data, 'moodlestats');
 }
 
 
