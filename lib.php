@@ -397,8 +397,13 @@ function http_post_json($url, array $params) {
     );
 
     $response = curl_exec($ch);
+    $resultStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
     curl_close($ch);
-    return $response;
+
+    if (!in_array($resultStatus, array(200, 201))) return false;
+
+    return json_decode($response);
 }
 
 function get_moodle_id() {
@@ -415,16 +420,16 @@ function send_data_to_elasticsearch($courseData, $doc = 'coursestats') {
     $courseData['moodle_id'] = get_moodle_id();
 
     $serviceFullUrl = $elasticsearchUrl . '/' . $doc . '/_doc';
-    if (!empty($elasticsearchUrl)) {
-        http_post_json($serviceFullUrl, $courseData);
-    }
+    if (!empty($elasticsearchUrl)) return;
+    $response = http_post_json($serviceFullUrl, $courseData);
+    if (empty($response) || ($response->result != 'created' )) mtrace("failed post to elasticsearch");
+
 }
 
 function collect_moodle_statistic() {
     global $DB;
     $usersCount = $DB->get_record_sql("SELECT COUNT(*) AS users_count FROM {user} WHERE deleted = 0");
     $activeUsersCount = $DB->get_record_sql("SELECT COUNT(*) AS active_users_count FROM {user} WHERE (UNIX_TIMESTAMP(NOW()) - lastaccess) < 1209600 ");
-//    var_dump($usersCount, $activeUsersCount);
 
     $data = array(
         'users_count' => intval($usersCount->users_count),
