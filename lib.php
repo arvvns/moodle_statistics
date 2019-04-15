@@ -420,7 +420,7 @@ function send_data_to_elasticsearch($courseData, $doc = 'coursestats') {
     $courseData['moodle_id'] = get_moodle_id();
 
     $serviceFullUrl = $elasticsearchUrl . '/' . $doc . '/_doc';
-    if (!empty($elasticsearchUrl)) return;
+    if (empty($elasticsearchUrl)) return;
     $response = http_post_json($serviceFullUrl, $courseData);
     if (empty($response) || ($response->result != 'created' )) mtrace("failed post to elasticsearch");
 
