@@ -26,10 +26,10 @@ function local_statistic_get()
 
     $ids = $DB->get_records_sql('SELECT id FROM {course} WHERE id > ' . $lastCourseId . ' LIMIT ' . $courseCount);
 
-    foreach ($ids as $CurrentId) {
+    foreach ($ids as $currentId) {
         $d = new stdClass();
         local_statistics_set_default_fields($d);
-        $id = $CurrentId->id;
+        $id = $currentId->id;
         $d->courseid = (int)$id;
         $r = $DB->get_record_sql('SELECT * FROM {course} WHERE id = ?', array($id));
         $courseidnumber = $r->idnumber;
