@@ -152,5 +152,18 @@ function xmldb_local_statistics_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2019050300, 'local', 'statistics');
     }
+
+    if ($oldversion < 2019052800) {
+        $table = new xmldb_table('statistics');
+
+        $groups_conversations = new xmldb_field('groups_conversations', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'other');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $groups_conversations)) {
+            $dbman->add_field($table, $groups_conversations);
+        }
+
+        upgrade_plugin_savepoint(true, 2019052800, 'local', 'statistics');
+    }
     return true;
 }

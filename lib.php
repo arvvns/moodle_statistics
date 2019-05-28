@@ -182,6 +182,16 @@ function local_statistic_get()
             $d->data_entries = intval($data_entries->data_entries);
         }
 
+        // count of messages in groups conversations
+        $d->groups_conversations = 0;
+        $groups_conversations = $DB->get_record_sql("SELECT COUNT(*) AS groups_conversations, g.courseid AS courseid 
+            FROM {messages} AS m 
+            INNER JOIN {message_conversations} AS mc ON m.conversationid = mc.id AND mc.itemtype ='groups' 
+            INNER JOIN {groups} AS g ON mc.itemid = g.id AND g.courseid = ?;", array($id));
+        if (!empty($groups_conversations->groups_conversations) and $groups_conversations->groups_conversations > 0) {
+            $d->groups_conversations = intval($groups_conversations->groups_conversations);
+        }
+
         $d->date = date('Y-m-d H:i:s', time());
 
         $coursemodulescount = local_statistics_get_course_modules_count($id);
