@@ -63,5 +63,6 @@ $string['elasticsearch_moodle_id'] = 'ElasticSearch Moodle Id';
 $string['elasticsearch_moodle_id_desc'] = 'Moodle id to filrate in elsaticsearch by moodle';
 $string['crontask_moodlestats'] = 'Statistics of users(count users and active users)';
 $string['data_entries'] = 'Database	entries';
+$string['groups_conversations'] = 'Groups Conversations';
 
 

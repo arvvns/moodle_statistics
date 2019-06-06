@@ -6,7 +6,7 @@ define('EXPORT_FIELDS',  ['coursename', 'courseid', 'idnumber', 'subcategory', '
     'active_teachers', 'teacher_last_access', 'students_count', 'active_students', 'student_last_access', 'resource',
     'page', 'url', 'book', 'other', 'assign', 'forum', 'forum_posts', 'forum_notnews', 'forum_notnews_posts','quiz', 'quiz_questions', 'files', 'glossary',
     'glossary_entries', 'wiki', 'data', 'data_entries', 'choice', 'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label',
-    'workshop', 'epas', 'epas_files', 'quiz_attempts', 'hvp',  'date']);
+    'workshop', 'epas', 'epas_files', 'quiz_attempts', 'hvp', 'groups_conversations',  'date']);
 
 function local_statistic_get()
 {
