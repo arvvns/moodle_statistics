@@ -24,7 +24,7 @@ $tasks = array(
     array(
         'classname' => 'local_statistics\task\cron_task',
         'blocking' => 0,
-        'minute' => '*',
+        'minute' => '*/5',
         'hour' => '*',
         'day' => '*',
         'month' => '*',
