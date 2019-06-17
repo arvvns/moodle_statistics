@@ -435,7 +435,10 @@ function get_moodle_id() {
 }
 
 function send_data_to_elasticsearch($courseData, $doc = 'coursestats') {
+    global $CFG;
+
     $elasticsearchUrl = get_config('local_statistics', 'elasticsearch_url');
+    if (!empty($CFG->local_statistics_elasticsearch_url)) $elasticsearchUrl = $CFG->local_statistics_elasticsearch_url;
 
     $courseData['moodle_id'] = get_moodle_id();
 
