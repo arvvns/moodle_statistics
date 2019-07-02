@@ -7,6 +7,7 @@ define('EXPORT_FIELDS',  ['coursename', 'courseid', 'idnumber', 'subcategory', '
     'page', 'url', 'book', 'other', 'assign', 'forum', 'forum_posts', 'forum_notnews', 'forum_notnews_posts','quiz', 'quiz_questions', 'files', 'glossary',
     'glossary_entries', 'wiki', 'data', 'data_entries', 'choice', 'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label',
     'workshop', 'epas', 'epas_files', 'quiz_attempts', 'hvp', 'groups_conversations',  'date']);
+define('ACTIVE_USER_TIME', 1209600); // seconds until user counted as inactive
 
 function local_statistic_get()
 {
@@ -449,18 +450,53 @@ function send_data_to_elasticsearch($courseData, $doc = 'coursestats') {
 
 }
 
-function collect_moodle_statistic() {
+function local_statistics_collect_moodle_statistic() {
     global $DB;
     $usersCount = $DB->get_record_sql("SELECT COUNT(*) AS users_count FROM {user} WHERE deleted = 0");
-    $activeUsersCount = $DB->get_record_sql("SELECT COUNT(*) AS active_users_count FROM {user} WHERE (UNIX_TIMESTAMP(NOW()) - lastaccess) < 1209600 ");
+    $activeUsersCount = $DB->get_record_sql("SELECT COUNT(*) AS active_users_count FROM {user} WHERE (UNIX_TIMESTAMP(NOW()) - lastaccess) < :active_user_time ", array('active_user_time' => ACTIVE_USER_TIME));
+
+    $eTeacherRoleId = local_statistics_get_role_id('editingteacher');
+    $studentRoleId = local_statistics_get_role_id('student');
 
     $data = array(
         'users_count' => intval($usersCount->users_count),
         'active_users_count' => intval($activeUsersCount->active_users_count),
+        'editing_teachers_count' => local_statistics_get_users_count($eTeacherRoleId),
+        'students_count' => local_statistics_get_users_count($studentRoleId),
+        'active_editing_teachers_count' => local_statistics_get_users_count($eTeacherRoleId, true),
+        'active_students_count' => local_statistics_get_users_count($studentRoleId, true),
         'date' => date('Y-m-d H:i:s')
     );
 
     send_data_to_elasticsearch($data, 'moodlestats');
 }
 
+function local_statistics_get_users_count($roleid = 5, $active = false)
+{
+    global $DB;
+
+    $activeQuery = '';
+
+    if ($active)
+        $activeQuery = " AND (UNIX_TIMESTAMP(NOW()) - lastaccess) < " . ACTIVE_USER_TIME;
+
+    $r = $DB->get_record_sql("SELECT COUNT(DISTINCT u.id) AS user_count
+        FROM {role_assignments} AS ra 
+        INNER JOIN {user} AS u 
+        ON ra.userid = u.id
+        WHERE u.deleted = 0 AND u.suspended = 0 AND u.confirmed = 1 AND u.id <> 0 AND ra.roleid = :roleid" . $activeQuery,
+        array('roleid' => $roleid));
+
+    if (empty($r)) return 0;
+    return intval($r->user_count);
+}
+
+function local_statistics_get_role_id($role) {
+    global $DB;
+
+    $r = $DB->get_record('role', array('shortname' => $role));
+
+    if (empty($r)) return -1;
+    return $r->id;
+}
 
