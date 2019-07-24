@@ -1,0 +1,1 @@
+install to {moodle_dir}/local/
