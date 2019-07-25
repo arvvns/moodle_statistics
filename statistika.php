@@ -20,8 +20,8 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
 
     $objPHPExcel->getProperties()->setCreator("emtc")
         ->setLastModifiedBy("emtc")
-        ->setTitle("Statistika " . date('Y-m-d H:i:s', time()))
-        ->setDescription("Dokumentas, kuriame yra moodle kursų statistika");
+        ->setTitle("Statistics " . date('Y-m-d H:i:s', time()))
+        ->setDescription("Moodle courses statistics");
 
     $column = 'A';
     foreach ($export_fields as $field_name) {
@@ -67,7 +67,7 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
 
 // Redirect output to a client’s web browser (Excel2007)
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="vma.ktu.lt statistika ' . date('Y-m-d H-i-s', time()) . '.xlsx"');
+    header('Content-Disposition: attachment;filename="moodle_courses_statistics_' . date('Y-m-d H-i-s', time()) . '.xlsx"');
     header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
     header('Cache-Control: max-age=1');
