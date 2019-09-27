@@ -1,12 +1,12 @@
-#Moodle statistics
+# Moodle statistics
 Some Moodle course statistics in xls like teacher, students count or used activites count.
 
-##Installing
+## Installing
 Files should be copied to  {moodle_dir}/local/statistics
 
-##How to
+## How to
 Download xlsx: 
 Site administration -> Download statistics
 
-##Configuration
+## Configuration
 Site administration -> Plugins -> Local plugins -> Statistics module
