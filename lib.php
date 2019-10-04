@@ -24,8 +24,13 @@ function local_statistic_get()
 
     $courseCount = get_config('local_statistics', 'course_per_cron');
     $lastCourseId = get_config('local_statistics', 'last_course_id');
+    $timeToUpdate = get_config('local_statistics', 'time_to_update');
 
-    $ids = $DB->get_records_sql('SELECT id FROM {course} WHERE id > ' . $lastCourseId . ' LIMIT ' . $courseCount);
+    $ids = $DB->get_records_sql("SELECT c.id id
+                                        FROM {course} c 
+                                        LEFT JOIN {statistics} s ON c.id = s.courseid
+                                        WHERE c.id > {$lastCourseId} AND (s.date  < '" . date('Y-m-d H:i:s', time() - ($timeToUpdate * 60)) . "' OR s.id IS NULL)
+                                        LIMIT {$courseCount}");
 
     foreach ($ids as $currentId) {
         $d = new stdClass();
