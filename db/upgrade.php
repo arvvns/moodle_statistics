@@ -165,5 +165,37 @@ function xmldb_local_statistics_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2019052800, 'local', 'statistics');
     }
+
+    if ($oldversion < 2019110500) {
+
+        // Define field course_creator_idnumber to be added to statistics.
+        $table = new xmldb_table('statistics');
+        $field = new xmldb_field('course_creator_idnumber', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'date');
+
+        // Conditionally launch add field course_creator_idnumber.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2019110500, 'local', 'statistics');
+    }
+
+    if ($oldversion < 2019110501) {
+
+        // Define field course_language to be added to statistics.
+        $table = new xmldb_table('statistics');
+        $field = new xmldb_field('course_language', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'course_creator_idnumber');
+
+        // Conditionally launch add field course_language.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2019110501, 'local', 'statistics');
+    }
+
+
     return true;
 }

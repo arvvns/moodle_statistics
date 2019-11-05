@@ -35,5 +35,8 @@ if ($hassiteconfig) {
     $settings->add( new admin_setting_configtext('local_statistics/elasticsearch_moodle_id', get_string('elasticsearch_moodle_id', 'local_statistics'),
         get_string('elasticsearch_moodle_id_desc', 'local_statistics'),''));
 
+    $settings->add( new admin_setting_configcheckbox('local_statistics/ktu_functionality', get_string('ktu_functionality', 'local_statistics'),
+        get_string('ktu_functionality_desc', 'local_statistics'), false));
+
 
 }

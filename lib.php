@@ -7,6 +7,8 @@ define('EXPORT_FIELDS',  ['coursename', 'courseid', 'idnumber', 'subcategory', '
     'page', 'url', 'book', 'other', 'assign', 'forum', 'forum_posts', 'forum_notnews', 'forum_notnews_posts','quiz', 'quiz_questions', 'files', 'glossary',
     'glossary_entries', 'wiki', 'data', 'data_entries', 'choice', 'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label',
     'workshop', 'epas', 'epas_files', 'quiz_attempts', 'hvp', 'groups_conversations',  'date']);
+// available fields: course_creator_idnumber, course_language
+
 define('ACTIVE_USER_TIME', 1209600); // seconds until user counted as inactive
 
 
@@ -23,6 +25,8 @@ class CourseStatistics
         $courseCount = get_config('local_statistics', 'course_per_cron');
         $lastCourseId = get_config('local_statistics', 'last_course_id');
         $timeToUpdate = get_config('local_statistics', 'time_to_update');
+        $ktuFunc = get_config('local_statistics', 'ktu_functionality');
+        $ktuFunc = ($ktuFunc == '1') ? true : false;
 
         $ids = $DB->get_records_sql("SELECT c.id id
                                         FROM {course} c 
@@ -35,12 +39,12 @@ class CourseStatistics
             $this->set_default_fields($d);
             $id = $currentId->id;
             $d->courseid = (int)$id;
-            $r = $DB->get_record_sql('SELECT * FROM {course} WHERE id = ?', array($id));
-            $courseidnumber = $r->idnumber;
-            $d->coursename = $r->fullname;
+            $course = $DB->get_record_sql('SELECT * FROM {course} WHERE id = ?', array($id));
+            $courseidnumber = $course->idnumber;
+            $d->coursename = $course->fullname;
             $d->idnumber = $this->get_ais_courseid_from_idnumber($courseidnumber);
 
-            $r = $DB->get_record_sql('SELECT * FROM {course_categories} WHERE id = ?', array($r->category));
+            $r = $DB->get_record_sql('SELECT * FROM {course_categories} WHERE id = ?', array($course->category));
             isset($r->name) ? $category = $r->name : $category = "-";
 
             if (isset($r->parent) && $r->parent != 0) {
@@ -58,13 +62,17 @@ class CourseStatistics
             $teachers = $this->get_users_from_course(3, $enrolinstances, $coursecontext->id);
             $data = $this->get_user_data($teachers);
 
-            $d->teachers = mb_substr($this->get_teachers($courseidnumber, $teachers), 0, 255);
+            $d->teachers = ($ktuFunc) ? $this->get_teachers_ktu($courseidnumber) : mb_substr($this->get_teachers($teachers), 0, 255);
+            $d->teachers = mb_substr($d->teachers, 0, 255);
             $d->teachers_count = $data[0];
             $d->active_teachers = $data[1];
             if ($data[2] > 0)
                 $d->teacher_last_access = date('Y-m-d H:i:s', $data[2]);
             else
                 $d->teacher_last_access = "-";
+
+            $d->course_creator_idnumber = ($ktuFunc) ? $this->get_course_creator_idnumber_ktu($courseidnumber) : '';
+            $d->course_language = ($ktuFunc) ? $this->get_course_language($course->shortname) : '';
 
             $students = $this->get_users_from_course(5, $enrolinstances, $coursecontext->id);
             $data = $this->get_user_data($students);
@@ -376,17 +384,17 @@ class CourseStatistics
         return $count;
     }
 
-    function get_teachers($courseidnumber, $teachers)
+    function get_teachers($teachers)
     {
-        if (empty($courseidnumber)) {
-            $tnames = array();
-            foreach ($teachers as $t) {
-                $tnames[] = $t->firstname . ' ' . $t->lastname;
-            }
-            return implode(', ', $tnames);
-        } else {
-            return $this->get_user_fullname_by_uid($this->get_uid_from_idnumber($courseidnumber));
+        $tnames = array();
+        foreach ($teachers as $t) {
+            $tnames[] = $t->firstname . ' ' . $t->lastname;
         }
+        return implode(', ', $tnames);
+    }
+
+    function get_teachers_ktu($courseidnumber) {
+        return $this->get_user_fullname_by_uid($this->get_uid_from_idnumber($courseidnumber));
     }
 
     function set_default_fields(&$dataobject)
@@ -501,6 +509,31 @@ class CourseStatistics
 
         if (empty($r)) return -1;
         return $r->id;
+    }
+
+    function get_course_creator_idnumber_ktu($courseidnumber) {
+        global $DB;
+
+        $uid = $this->get_uid_from_idnumber($courseidnumber);
+
+        if (empty($uid)) return '';
+        $user = $DB->get_record('user', array('alternatename' => 'ldap_uid#' . $uid . ';'));
+
+        if (!empty($user) and !empty($user->idnumber)) {
+            $idnumbers = explode(':', $user->idnumber);
+            if (!empty($idnumbers) and $idnumbers[0] == 'employeeid')
+                return $idnumbers[1];
+        }
+        return '';
+    }
+
+    function get_course_language($title) {
+        if (strpos($title, ' LT ')) {
+            return 'lt';
+        } else if (strpos('$title,  EN ')) {
+            return 'en';
+        }
+        return '';
     }
 
 }

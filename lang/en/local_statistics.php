@@ -66,5 +66,9 @@ $string['data_entries'] = 'Database	entries';
 $string['groups_conversations'] = 'Groups Conversations';
 $string['time_to_update'] = 'Course update time';
 $string['time_to_update_desc'] = 'Updates course statistics after x minutes';
+$string['ktu_functionality'] = 'Additional functionality for KTU';
+$string['ktu_functionality_desc'] = 'Changes teachers to course author and more ...';
+$string['course_creator_idnumber'] = 'idnumber';
+$string['course_language'] = 'Course language';
 
 

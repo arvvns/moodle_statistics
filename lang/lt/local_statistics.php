@@ -69,3 +69,7 @@ $string['elasticsearch_moodle_id_desc'] = 'Moodle id to filrate in elsaticsearch
 $string['crontask_moodlestats'] = 'Statistics of users(count users and active users)';
 $string['data_entries'] = 'Duomenų bazės įrašų skaičius';
 $string['groups_conversations'] = 'Grupinės žinutės';
+$string['ktu_functionality'] = 'Pritaikymas KTU';
+$string['ktu_functionality_desc'] = 'Pakeičia mokytojus į kurso autorių ir...';
+$string['course_creator_idnumber'] = 'Tab Nr.';
+$string['course_language'] = 'Kurso kalba';
