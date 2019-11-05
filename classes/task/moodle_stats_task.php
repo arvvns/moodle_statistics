@@ -24,6 +24,7 @@ class moodle_stats_task extends \core\task\scheduled_task {
     {
         global $CFG;
         require_once($CFG->dirroot . '/local/statistics/lib.php');
-        local_statistics_collect_moodle_statistic();
+        $courseStats = new \CourseStatistics();
+        $courseStats->collect_moodle_statistic();
     }
 }

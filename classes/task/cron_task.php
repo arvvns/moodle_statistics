@@ -21,7 +21,8 @@ class cron_task extends \core\task\scheduled_task {
     public function execute() {
         global $CFG;
         require_once($CFG->dirroot . '/local/statistics/lib.php');
-        local_statistic_get();
+        $courseStats = new \CourseStatistics();
+        $courseStats->collect();
     }
 
 }
