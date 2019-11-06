@@ -530,7 +530,7 @@ class CourseStatistics
     function get_course_language($title) {
         if (strpos($title, ' LT ')) {
             return 'lt';
-        } else if (strpos('$title,  EN ')) {
+        } else if (strpos($title,' EN ')) {
             return 'en';
         }
         return '';
