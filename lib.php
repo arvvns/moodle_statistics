@@ -19,6 +19,7 @@ class CourseStatistics
     function collect()
     {
         global $DB;
+        global $CFG;
 
         mtrace("Generuojama kursų statistika");
 
@@ -196,12 +197,14 @@ class CourseStatistics
 
             // count of messages in groups conversations
             $d->groups_conversations = 0;
-            $groups_conversations = $DB->get_record_sql("SELECT COUNT(*) AS groups_conversations, g.courseid AS courseid 
-            FROM {messages} AS m 
-            INNER JOIN {message_conversations} AS mc ON m.conversationid = mc.id AND mc.itemtype ='groups' 
-            INNER JOIN {groups} AS g ON mc.itemid = g.id AND g.courseid = ?;", array($id));
-            if (!empty($groups_conversations->groups_conversations) and $groups_conversations->groups_conversations > 0) {
-                $d->groups_conversations = intval($groups_conversations->groups_conversations);
+            if ($CFG->version > '2018120306.00') {
+                $groups_conversations = $DB->get_record_sql("SELECT COUNT(*) AS groups_conversations, g.courseid AS courseid 
+                FROM {messages} AS m 
+                INNER JOIN {message_conversations} AS mc ON m.conversationid = mc.id AND mc.itemtype ='groups' 
+                INNER JOIN {groups} AS g ON mc.itemid = g.id AND g.courseid = ?;", array($id));
+                if (!empty($groups_conversations->groups_conversations) and $groups_conversations->groups_conversations > 0) {
+                    $d->groups_conversations = intval($groups_conversations->groups_conversations);
+                }
             }
 
             $d->date = date('Y-m-d H:i:s', time());
