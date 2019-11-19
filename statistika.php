@@ -4,6 +4,8 @@ require_once('../../config.php');
 require_once('lib.php');
 require_once('../../lib/moodlelib.php');
 
+require_login();
+if (!is_siteadmin()) print_error('no_permission');
 
 if (isset($_GET["task"]) && $_GET["task"] == "generate")
     local_statistic_get();
