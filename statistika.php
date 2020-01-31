@@ -10,9 +10,21 @@ if (!is_siteadmin()) print_error('no_permission');
 if (isset($_GET["task"]) && $_GET["task"] == "generate")
     local_statistic_get();
 else if(isset($_GET["task"]) && $_GET["task"] == "download"){
-    require_once('../../lib/phpexcel/PHPExcel.php');
 
-    $objPHPExcel = new PHPExcel();
+    global $CFG;
+    require_once($CFG->dirroot.'/lib/excellib.class.php');
+
+    $downloadfilename = "Statistics " . date('Y-m-d H:i:s', time());
+    $worksheetTitle = "Statistics";
+
+    // Creating a workbook
+    $workbook = new MoodleExcelWorkbook("-");
+    // Sending HTTP headers
+    $workbook->send($downloadfilename);
+    // Adding the worksheet
+    $myxls = $workbook->add_worksheet($worksheetTitle);
+
+
     $export_fields_conf = get_config('local_statistics', 'export_fields');
     if (empty($export_fields_conf) or !$export_fields_conf) {
         $export_fields = EXPORT_FIELDS;
@@ -20,68 +32,28 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
         $export_fields = explode(',', $export_fields_conf);
     }
 
-    $objPHPExcel->getProperties()->setCreator("emtc")
-        ->setLastModifiedBy("emtc")
-        ->setTitle("Statistics " . date('Y-m-d H:i:s', time()))
-        ->setDescription("Moodle courses statistics");
-
-    $column = 'A';
+    $column = 0;
     foreach ($export_fields as $field_name) {
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column . '1', get_string($field_name, 'local_statistics'));
-        $column++;
+        $myxls->write_string(0, $column++, get_string($field_name, 'local_statistics'));
     }
-
-    $objPHPExcel->getActiveSheet()->freezePane('A2');
-    $column = 'A';
-    for ($i = 0; $i < count($export_fields); $i++) {
-        $objPHPExcel->getActiveSheet()->getColumnDimension($column)->setWidth(20);
-        $column++;
-    }
-
-    $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(40);
-    $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(10);
-    $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
-    $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(30);
-
-    $objPHPExcel->getActiveSheet()->getRowDimension(1)->setRowHeight(30);
-
-    $objPHPExcel->getActiveSheet()->getStyle('A1:AZ1')->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('A1:AZ1')->getAlignment()->setWrapText(true);
 
 
     $data = $DB->get_records_sql('SELECT * FROM {statistics}');
-    $c = 2;
+    $row = 1;
     foreach ($data as $d) {
-        $column = 'A';
+        $column = 0;
         foreach ($export_fields as $field_name) {
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column . $c, $d->$field_name);
-            $column++;
+            $myxls->write_string($row, $column++, $d->$field_name);
         }
-
-        $c++;
+        $row++;
     }
-    $objPHPExcel->getActiveSheet()->getStyle('F2:AZ' . $c)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-    $objPHPExcel->getActiveSheet()->setTitle('Statistika');
+    $myxls->set_column(0, 0, 40);
+    $myxls->set_column(1, 1, 10);
+    $myxls->set_column(2, 50, 30);
 
-    $objPHPExcel->setActiveSheetIndex(0);
-
-
-// Redirect output to a client’s web browser (Excel2007)
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="moodle_courses_statistics_' . date('Y-m-d H-i-s', time()) . '.xlsx"');
-    header('Cache-Control: max-age=0');
-// If you're serving to IE 9, then the following may be needed
-    header('Cache-Control: max-age=1');
-
-// If you're serving to IE over SSL, then the following may be needed
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-    header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-    header('Pragma: public'); // HTTP/1.0
-
-    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-    $objWriter->save('php://output');
+    /// Close the workbook
+    $workbook->close();
     exit;
 }
 
