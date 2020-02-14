@@ -196,6 +196,22 @@ function xmldb_local_statistics_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019110501, 'local', 'statistics');
     }
 
+    if ($oldversion < 2020021400) {
+
+        // Define field vpl to be added to statistics.
+        $table = new xmldb_table('statistics');
+        $field = new xmldb_field('vpl', XMLDB_TYPE_INTEGER, '13', null, null, null, '0', 'course_language');
+
+        // Conditionally launch add field vpl.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2020021400, 'local', 'statistics');
+    }
+
+
 
     return true;
 }

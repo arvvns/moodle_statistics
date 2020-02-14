@@ -73,3 +73,4 @@ $string['ktu_functionality'] = 'Pritaikymas KTU';
 $string['ktu_functionality_desc'] = 'Pakeičia mokytojus į kurso autorių ir...';
 $string['course_creator_idnumber'] = 'Tab Nr.';
 $string['course_language'] = 'Kurso kalba';
+$string['vpl'] = 'VPL';
