@@ -211,6 +211,31 @@ function xmldb_local_statistics_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020021400, 'local', 'statistics');
     }
 
+    if ($oldversion < 2020042000) {
+
+        // Define field vpl to be added to statistics.
+        $table = new xmldb_table('statistics');
+        $field_bigbluebuttonbn = new xmldb_field('bigbluebuttonbn', XMLDB_TYPE_INTEGER, '13', null, null, null, '0', 'vpl');
+        $field_knockplop = new xmldb_field('knockplop', XMLDB_TYPE_INTEGER, '13', null, null, null, '0', 'bigbluebuttonbn');
+        $field_zoom = new xmldb_field('zoom', XMLDB_TYPE_INTEGER, '13', null, null, null, '0', 'knockplop');
+
+        // Conditionally launch add field .
+        if (!$dbman->field_exists($table, $field_bigbluebuttonbn)) {
+            $dbman->add_field($table, $field_bigbluebuttonbn);
+        }
+
+        if (!$dbman->field_exists($table, $field_knockplop)) {
+            $dbman->add_field($table, $field_knockplop);
+        }
+
+        if (!$dbman->field_exists($table, $field_zoom)) {
+            $dbman->add_field($table, $field_zoom);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2020042000, 'local', 'statistics');
+    }
+
 
 
     return true;

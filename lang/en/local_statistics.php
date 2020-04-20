@@ -71,5 +71,8 @@ $string['ktu_functionality_desc'] = 'Changes teachers to course author and more 
 $string['course_creator_idnumber'] = 'idnumber';
 $string['course_language'] = 'Course language';
 $string['vpl'] = 'VPL';
+$string['bigbluebuttonbn'] = 'Big Blue Button';
+$string['knockplop'] = 'KnockPlop';
+$string['zoom'] = 'Zoom';
 
 

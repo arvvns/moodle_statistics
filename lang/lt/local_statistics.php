@@ -74,3 +74,6 @@ $string['ktu_functionality_desc'] = 'Pakeičia mokytojus į kurso autorių ir...
 $string['course_creator_idnumber'] = 'Tab Nr.';
 $string['course_language'] = 'Kurso kalba';
 $string['vpl'] = 'VPL';
+$string['bigbluebuttonbn'] = 'Big Blue Button';
+$string['knockplop'] = 'KnockPlop';
+$string['zoom'] = 'Zoom';
