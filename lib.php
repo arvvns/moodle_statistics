@@ -551,24 +551,26 @@ class CourseStatistics
         $context = context_course::instance($courseid);
         $contextcheck = $context->path . '/%';
 
-        $sizesql = "SELECT SUM(a.filesize) as filesize
+        $sizesql = "SELECT CEIL(SUM(a.filesize)/(1024*1024)) as filesize
               FROM (SELECT DISTINCT f.contenthash, f.component, f.filesize
                     FROM {files} f
                     JOIN {context} ctx ON f.contextid = ctx.id
                     WHERE ".$DB->sql_concat('ctx.path', "'/'")." LIKE ?
-                       AND f.filename != '.') a
-             GROUP BY a.component";
+                       AND f.filename != '.') a";
+
+        var_dump($sizesql, $contextcheck, $courseid);
 
         $csize = $DB->get_record_sql($sizesql, array($contextcheck));
 
         if (!empty($csize)){
-             $coursesize = $csize->filesize / (1024*1024);
-
-             if (($coursesize > 0) and ($coursesize < 1)) {
-                 return 1;
-             } else {
-                 return intval($coursesize);
-             }
+            return $csize->filesize;
+//             $coursesize = $csize->filesize / (1024*1024);
+//
+//             if (($coursesize > 0) and ($coursesize < 1)) {
+//                 return 1;
+//             } else {
+//                 return intval($coursesize);
+//             }
         }
 
         return 0;
