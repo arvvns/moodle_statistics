@@ -211,7 +211,8 @@ class CourseStatistics
                 }
             }
 
-            $d->course_size = $this->get_course_size($id);
+//            $d->course_size = $this->get_course_size($id);
+            $d->course_size = 0;
 
             $d->date = date('Y-m-d H:i:s', time());
 
