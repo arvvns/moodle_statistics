@@ -11,7 +11,7 @@ define('EXPORT_FIELDS',  ['coursename', 'courseid', 'idnumber', 'subcategory', '
     'quiz', 'quiz_questions', 'files', 'glossary','glossary_entries', 'wiki', 'data', 'data_entries', 'choice',
     'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label', 'workshop', 'epas', 'epas_files', 'quiz_attempts',
     'hvp', 'vpl', 'groups_conversations', 'date', "bigbluebuttonbn", "knockplop", "zoom", "lti"]);
-// available fields: course_creator_idnumber, course_language
+// available fields: course_creator_idnumber, course_language, course_size
 
 define('ACTIVE_USER_TIME', 1209600); // seconds until user counted as inactive
 
@@ -211,6 +211,9 @@ class CourseStatistics
                 }
             }
 
+            $d->course_size = $this->get_course_size($id);
+            var_dump($d->course_size);
+            die('-------');
             $d->date = date('Y-m-d H:i:s', time());
 
             $coursemodulescount = $this->get_course_modules_count($id);
@@ -543,8 +546,35 @@ class CourseStatistics
         return '';
     }
 
-}
+    function get_course_size($courseid) {
+        global $DB;
 
+        $context = context_course::instance($courseid);
+        $contextcheck = $context->path . '/%';
+
+        $sizesql = "SELECT SUM(a.filesize) as filesize
+              FROM (SELECT DISTINCT f.contenthash, f.component, f.filesize
+                    FROM {files} f
+                    JOIN {context} ctx ON f.contextid = ctx.id
+                    WHERE ".$DB->sql_concat('ctx.path', "'/'")." LIKE ?
+                       AND f.filename != '.') a
+             GROUP BY a.component";
+
+        $csize = $DB->get_record_sql($sizesql, array($contextcheck));
+
+        if (!empty($csize)){
+             $coursesize = $csize->filesize / (1024*1024);
+
+             if (($coursesize > 0) and ($coursesize < 1)) {
+                 return 1;
+             } else {
+                 return intval($coursesize);
+             }
+        }
+
+        return 0;
+    }
+}
 
 function local_statistics_extend_settings_navigation(settings_navigation $nav, context $context)
 {

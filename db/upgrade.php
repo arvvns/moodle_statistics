@@ -251,5 +251,21 @@ function xmldb_local_statistics_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020042300, 'local', 'statistics');
     }
 
+    if ($oldversion < 2020042301) {
+
+        // Define field course_size to be added to statistics.
+        $table = new xmldb_table('statistics');
+        $field = new xmldb_field('course_size', XMLDB_TYPE_INTEGER, '20', null, null, null, '0', 'lti');
+
+        // Conditionally launch add field course_size.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2020042301, 'local', 'statistics');
+    }
+
+
     return true;
 }

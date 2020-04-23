@@ -58,6 +58,7 @@
         <FIELD NAME="knockplop" TYPE="int" LENGTH="13" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="zoom" TYPE="int" LENGTH="13" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="lti" TYPE="int" LENGTH="13" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="course_size" TYPE="int" LENGTH="20" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="MB"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key"/>
