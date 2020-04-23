@@ -77,3 +77,4 @@ $string['vpl'] = 'VPL';
 $string['bigbluebuttonbn'] = 'Big Blue Button';
 $string['knockplop'] = 'KnockPlop';
 $string['zoom'] = 'Zoom';
+$string['lti'] = 'LTI';

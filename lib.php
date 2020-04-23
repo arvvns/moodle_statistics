@@ -1,7 +1,7 @@
 <?php
 // Needs field in db table
 define('ACTIVITES_LIST',  ["assign", "quiz", "glossary", "forum", "wiki", "data", "choice", "lesson", "feedback",
-    "attendance", "workshop", "hvp", "vpl", "bigbluebuttonbn", "knockplop", "zoom"]);
+    "attendance", "workshop", "hvp", "vpl", "bigbluebuttonbn", "knockplop", "zoom", "lti"]);
 
 define('RESOURCES_LIST',  ["folder", "imscp", "label", "page", "resource", "url", "book"]);
 
@@ -10,7 +10,7 @@ define('EXPORT_FIELDS',  ['coursename', 'courseid', 'idnumber', 'subcategory', '
     'page', 'url', 'book', 'other', 'assign', 'forum', 'forum_posts', 'forum_notnews', 'forum_notnews_posts',
     'quiz', 'quiz_questions', 'files', 'glossary','glossary_entries', 'wiki', 'data', 'data_entries', 'choice',
     'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label', 'workshop', 'epas', 'epas_files', 'quiz_attempts',
-    'hvp', 'vpl', 'groups_conversations', 'date', "bigbluebuttonbn", "knockplop", "zoom"]);
+    'hvp', 'vpl', 'groups_conversations', 'date', "bigbluebuttonbn", "knockplop", "zoom", "lti"]);
 // available fields: course_creator_idnumber, course_language
 
 define('ACTIVE_USER_TIME', 1209600); // seconds until user counted as inactive

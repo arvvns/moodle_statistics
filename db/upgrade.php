@@ -236,7 +236,20 @@ function xmldb_local_statistics_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020042000, 'local', 'statistics');
     }
 
+    if ($oldversion < 2020042300) {
 
+        // Define field lti to be added to statistics.
+        $table = new xmldb_table('statistics');
+        $field = new xmldb_field('lti', XMLDB_TYPE_INTEGER, '13', null, null, null, '0', 'zoom');
+
+        // Conditionally launch add field lti.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2020042300, 'local', 'statistics');
+    }
 
     return true;
 }
