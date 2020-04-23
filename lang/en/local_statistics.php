@@ -75,5 +75,6 @@ $string['bigbluebuttonbn'] = 'Big Blue Button';
 $string['knockplop'] = 'KnockPlop';
 $string['zoom'] = 'Zoom';
 $string['lti'] = 'LTI';
+$string['course_size'] = 'Course Size MB';
 
 

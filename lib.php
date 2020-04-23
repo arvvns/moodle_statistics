@@ -212,8 +212,7 @@ class CourseStatistics
             }
 
             $d->course_size = $this->get_course_size($id);
-            var_dump($d->course_size);
-            die('-------');
+
             $d->date = date('Y-m-d H:i:s', time());
 
             $coursemodulescount = $this->get_course_modules_count($id);
