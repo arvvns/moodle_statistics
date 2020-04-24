@@ -76,5 +76,7 @@ $string['knockplop'] = 'KnockPlop';
 $string['zoom'] = 'Zoom';
 $string['lti'] = 'LTI';
 $string['course_size'] = 'Course Size MB';
+$string['count_course_size'] = 'Count course size';
+$string['count_course_size_desc'] = 'May impact performance';
 
 

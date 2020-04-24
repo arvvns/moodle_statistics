@@ -30,6 +30,7 @@ class CourseStatistics
         $courseCount = get_config('local_statistics', 'course_per_cron');
         $lastCourseId = get_config('local_statistics', 'last_course_id');
         $timeToUpdate = get_config('local_statistics', 'time_to_update');
+        $countCourseSize = get_config('local_statistics', 'count_course_size');
         $ktuFunc = get_config('local_statistics', 'ktu_functionality');
         $ktuFunc = ($ktuFunc == '1') ? true : false;
 
@@ -40,9 +41,13 @@ class CourseStatistics
                                         LIMIT {$courseCount}");
 
         foreach ($ids as $currentId) {
+
+            $starttime = time();
+            $id = $currentId->id;
+            mtrace("Started generating course " . $id .  " statistics");
+
             $d = new stdClass();
             $this->set_default_fields($d);
-            $id = $currentId->id;
             $d->courseid = (int)$id;
             $course = $DB->get_record_sql('SELECT * FROM {course} WHERE id = ?', array($id));
             $courseidnumber = $course->idnumber;
@@ -211,7 +216,8 @@ class CourseStatistics
                 }
             }
 
-            $d->course_size = $this->get_course_size($id);
+            if ($countCourseSize) $d->course_size = $this->get_course_size($id);
+            else $d->course_size = 0;
 
             $d->date = date('Y-m-d H:i:s', time());
 
@@ -233,8 +239,10 @@ class CourseStatistics
 
             $this->send_data_to_elasticsearch((array)$d);
 
+            $endtime = time();
+            mtrace("Finished generating course " . $id .  " statistic. Took: " . ($endtime - $starttime) . "s");
         }
-        mtrace("Sugeneruoti " . count($ids) . " kursai");
+        mtrace("Generated " . count($ids) . " courses");
         return true;
     }
 
@@ -548,6 +556,9 @@ class CourseStatistics
     function get_course_size($courseid) {
         global $DB;
 
+        mtrace("Started counting course " . $courseid .  " size");
+        $starttime = time();
+
         $context = context_course::instance($courseid);
         $contextcheck = $context->path . '/%';
 
@@ -559,6 +570,9 @@ class CourseStatistics
                        AND f.filename != '.') a";
 
         $csize = $DB->get_record_sql($sizesql, array($contextcheck, $context->path));
+
+        $endtime = time();
+        mtrace("Finished counting course " . $courseid .  " size. Took: " . ($endtime - $starttime) . "s");
 
         if (!empty($csize)){
             return $csize->filesize;

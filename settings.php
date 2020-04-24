@@ -38,5 +38,8 @@ if ($hassiteconfig) {
     $settings->add( new admin_setting_configcheckbox('local_statistics/ktu_functionality', get_string('ktu_functionality', 'local_statistics'),
         get_string('ktu_functionality_desc', 'local_statistics'), false));
 
+    $settings->add( new admin_setting_configcheckbox('local_statistics/count_course_size', get_string('count_course_size', 'local_statistics'),
+        get_string('count_course_size_desc', 'local_statistics'), false));
+
 
 }
