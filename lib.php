@@ -574,7 +574,7 @@ class CourseStatistics
         $endtime = time();
         mtrace("Finished counting course " . $courseid .  " size. Took: " . ($endtime - $starttime) . "s");
 
-        if (!empty($csize)){
+        if (!empty($csize) and !empty($csize->filesize)){
             return $csize->filesize;
         }
 
