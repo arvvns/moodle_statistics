@@ -211,8 +211,7 @@ class CourseStatistics
                 }
             }
 
-//            $d->course_size = $this->get_course_size($id);
-            $d->course_size = 0;
+            $d->course_size = $this->get_course_size($id);
 
             $d->date = date('Y-m-d H:i:s', time());
 
@@ -556,22 +555,13 @@ class CourseStatistics
               FROM (SELECT DISTINCT f.contenthash, f.component, f.filesize
                     FROM {files} f
                     JOIN {context} ctx ON f.contextid = ctx.id
-                    WHERE ".$DB->sql_concat('ctx.path', "'/'")." LIKE ?
+                    WHERE (ctx.path LIKE ? OR ctx.path = ?) 
                        AND f.filename != '.') a";
 
-        var_dump($sizesql, $contextcheck, $courseid);
-
-        $csize = $DB->get_record_sql($sizesql, array($contextcheck));
+        $csize = $DB->get_record_sql($sizesql, array($contextcheck, $context->path));
 
         if (!empty($csize)){
             return $csize->filesize;
-//             $coursesize = $csize->filesize / (1024*1024);
-//
-//             if (($coursesize > 0) and ($coursesize < 1)) {
-//                 return 1;
-//             } else {
-//                 return intval($coursesize);
-//             }
         }
 
         return 0;
