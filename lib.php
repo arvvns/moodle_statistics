@@ -265,7 +265,8 @@ class CourseStatistics
         u.id,
         u.firstname,
         u.lastname,
-        u.lastaccess
+        u.lastaccess,
+        ul.timeaccess as courselastaccess
     FROM
         {user} u
     JOIN {user_enrolments} ue ON (
@@ -305,8 +306,8 @@ class CourseStatistics
         $newest = 0;
         $d = array();
         foreach ($data as $user) {
-            if (isset($user->lastaccess) && $user->lastaccess > $active) $activeCount++;
-            if ($user->lastaccess > $newest) $newest = $user->lastaccess;
+            if (isset($user->courselastaccess) && $user->courselastaccess > $active) $activeCount++;
+            if ($user->courselastaccess > $newest) $newest = $user->courselastaccess;
         }
         $count = count($data);
         $d[0] = $count;
