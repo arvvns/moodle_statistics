@@ -14,6 +14,9 @@ else if(isset($_GET["task"]) && $_GET["task"] == "download"){
     global $CFG;
     require_once($CFG->dirroot.'/lib/excellib.class.php');
 
+    core_php_time_limit::raise(2*60);
+    raise_memory_limit(MEMORY_EXTRA);
+
     $downloadfilename = "Statistics " . date('Y-m-d H:i:s', time());
     $worksheetTitle = "Statistics";
 
