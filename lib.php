@@ -11,7 +11,8 @@ define('EXPORT_FIELDS',  ['coursename', 'courseid', 'idnumber', 'subcategory', '
     'quiz', 'quiz_questions', 'files', 'glossary','glossary_entries', 'wiki', 'data', 'data_entries', 'choice',
     'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label', 'workshop', 'epas', 'epas_files', 'quiz_attempts',
     'hvp', 'vpl', 'groups_conversations', 'date', "bigbluebuttonbn", "knockplop", "zoom", "lti"]);
-// available fields: course_creator_idnumber, course_language, course_size
+// available fields: "course_creator_idnumber", "course_language", "course_size", "turnitin",
+//    "turnitin_files", "tunritin_files_succ", "turnitintooltwo", "turnitintooltwo_submissions"
 
 define('ACTIVE_USER_TIME', 1209600); // seconds until user counted as inactive
 
@@ -183,6 +184,13 @@ class CourseStatistics
                     $d->epas_files = intval($epas_files_count->count);
                 }
             }
+
+            //turnitin
+            $plagturnitin = $this->get_plagiarism_turnitin_stats($id);
+            $turnitintwo = $this->get_turnitintooltwo_stats($id);
+
+            $turnitin = array_merge($plagturnitin, $turnitintwo);
+            $d = (object)array_merge((array)$d, $turnitin);
 
             // quiz attempts counts by course
             $d->quiz_attempts = 0;
@@ -580,6 +588,54 @@ class CourseStatistics
         }
 
         return 0;
+    }
+
+    function get_plagiarism_turnitin_stats($courseid) {
+        global $DB;
+        $plugins = core_plugin_manager::instance()->get_installed_plugins('plagiarism');
+
+        if (empty($courseid)) return array();
+        if (empty($plugins['turnitin'])) return array();
+
+        $data = array();
+
+        $cmcount = $DB->get_record_sql("SELECT COUNT(*) AS cm_count
+            FROM {plagiarism_turnitin_config} AS tconf
+            INNER JOIN {course_modules} AS cm ON tconf.cm = cm.id
+            WHERE tconf.name = 'use_turnitin' AND value = '1' AND cm.course = ?", array($courseid));
+        $data['turnitin'] = !empty($cmcount) ? $cmcount->cm_count : 0;
+
+        $filescount= $DB->get_record_sql("SELECT COUNT(*) AS files_count
+            FROM {plagiarism_turnitin_files} AS f
+            INNER JOIN {course_modules} AS cm ON f.cm = cm.id
+            WHERE cm.course = ?", array($courseid));
+        $data['turnitin_files'] = !empty($filescount) ? $filescount->files_count : 0;
+
+        $turnitin_files_succ = $DB->get_record_sql("SELECT COUNT(*) AS succ_files
+            FROM {plagiarism_turnitin_files} AS f
+            INNER JOIN {course_modules} AS cm ON f.cm = cm.id
+            WHERE f.statuscode = 'success' AND cm.course = ?", array($courseid));
+        $data['turnitin_files_succ'] = !empty($turnitin_files_succ) ? $turnitin_files_succ->succ_files : 0;
+
+        return $data;
+    }
+
+    function get_turnitintooltwo_stats($courseid) {
+        global $DB;
+
+        $plugins = core_plugin_manager::instance()->get_installed_plugins('mod');
+        if (empty($courseid)) return array();
+        if (empty($plugins['turnitintwo'])) return array();
+
+        $data = array();
+
+        $cmcount = $DB->get_record_sql("SELECT COUNT(*) AS cm_count FROM {turnitintooltwo} WHERE course = ?", array($courseid));
+        $data['turnitintooltwo'] = !empty($cmcount) ? $cmcount->cm_count : 0;
+
+        $subcount= $DB->get_record_sql("SELECT COUNT(*) AS sub_count FROM {turnitintooltwo_submissions} WHERE course = ?", array($courseid));
+        $data['turnitintooltwo_submissions'] = (!empty($subcount)) ? $subcount->sub_count : 0;
+
+        return $data;
     }
 }
 

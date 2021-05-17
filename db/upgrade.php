@@ -266,6 +266,50 @@ function xmldb_local_statistics_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020042301, 'local', 'statistics');
     }
 
+    if ($oldversion < 2021051100) {
+
+        // Define field turnitin to be added to statistics.
+        $table = new xmldb_table('statistics');
+        $field_turnitin = new xmldb_field('turnitin', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'course_size');
+
+        // Conditionally launch add field turnitin.
+        if (!$dbman->field_exists($table, $field_turnitin)) {
+            $dbman->add_field($table, $field_turnitin);
+        }
+
+        $field_turnitin_files = new xmldb_field('turnitin_files', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'turnitin');
+
+        // Conditionally launch add field turnitin_files.
+        if (!$dbman->field_exists($table, $field_turnitin_files)) {
+            $dbman->add_field($table, $field_turnitin_files);
+        }
+
+        $field_turnitin_files_succ = new xmldb_field('turnitin_files_succ', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'turnitin_files');
+
+        // Conditionally launch add field turnitin_files_succ.
+        if (!$dbman->field_exists($table, $field_turnitin_files_succ)) {
+            $dbman->add_field($table, $field_turnitin_files_succ);
+        }
+
+        $field_turnitintooltwo = new xmldb_field('turnitintooltwo', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'turnitin_files_succ');
+
+        // Conditionally launch add field turnitintooltwo.
+        if (!$dbman->field_exists($table, $field_turnitintooltwo)) {
+            $dbman->add_field($table, $field_turnitintooltwo);
+        }
+
+        $field_turnitintooltwo_submissions = new xmldb_field('turnitintooltwo_submissions', XMLDB_TYPE_INTEGER, '13', null, XMLDB_NOTNULL, null, '0', 'turnitintooltwo');
+
+        // Conditionally launch add field turnitintooltwo_submissions.
+        if (!$dbman->field_exists($table, $field_turnitintooltwo_submissions)) {
+            $dbman->add_field($table, $field_turnitintooltwo_submissions);
+        }
+
+        // Statistics savepoint reached.
+        upgrade_plugin_savepoint(true, 2021051100, 'local', 'statistics');
+    }
+
+
 
     return true;
 }
