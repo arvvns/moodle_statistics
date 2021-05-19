@@ -632,7 +632,9 @@ class CourseStatistics
         $cmcount = $DB->get_record_sql("SELECT COUNT(*) AS cm_count FROM {turnitintooltwo} WHERE course = ?", array($courseid));
         $data['turnitintooltwo'] = !empty($cmcount) ? $cmcount->cm_count : 0;
 
-        $subcount= $DB->get_record_sql("SELECT COUNT(*) AS sub_count FROM {turnitintooltwo_submissions} WHERE course = ?", array($courseid));
+        $subcount= $DB->get_record_sql("SELECT COUNT(*) AS sub_count FROM {turnitintooltwo_submissions} AS sub
+            INNER JOIN {turnitintooltwo} ttt ON sub.turnitintooltwoid = ttt.id           
+            WHERE ttt.course = ?", array($courseid));
         $data['turnitintooltwo_submissions'] = (!empty($subcount)) ? $subcount->sub_count : 0;
 
         return $data;
