@@ -625,7 +625,7 @@ class CourseStatistics
 
         $plugins = core_plugin_manager::instance()->get_installed_plugins('mod');
         if (empty($courseid)) return array();
-        if (empty($plugins['turnitintwo'])) return array();
+        if (empty($plugins['turnitintooltwo'])) return array();
 
         $data = array();
 
