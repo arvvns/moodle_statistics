@@ -78,5 +78,10 @@ $string['lti'] = 'LTI';
 $string['course_size'] = 'Course Size MB';
 $string['count_course_size'] = 'Count course size';
 $string['count_course_size_desc'] = 'May impact performance';
+$string['turnitin'] = 'Turnitin';
+$string['turnitin_files'] = 'Turnitin files';
+$string['turnitin_files_succ'] = 'Turnitin files successfull upload';
+$string['turnitintooltwo'] = 'Turnitintooltwo';
+$string['turnitintooltwo_submissions'] = 'Turnitintooltwo submissions';
 
 
