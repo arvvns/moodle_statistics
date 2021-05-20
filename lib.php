@@ -12,7 +12,7 @@ define('EXPORT_FIELDS',  ['coursename', 'courseid', 'idnumber', 'subcategory', '
     'lesson', 'feedback', 'attendance', 'folder', 'imscp', 'label', 'workshop', 'epas', 'epas_files', 'quiz_attempts',
     'hvp', 'vpl', 'groups_conversations', 'date', "bigbluebuttonbn", "knockplop", "zoom", "lti"]);
 // available fields: "course_creator_idnumber", "course_language", "course_size", "turnitin",
-//    "turnitin_files", "tunritin_files_succ", "turnitintooltwo", "turnitintooltwo_submissions"
+//    "turnitin_files", "turnitin_files_succ", "turnitintooltwo", "turnitintooltwo_submissions"
 
 define('ACTIVE_USER_TIME', 1209600); // seconds until user counted as inactive
 
